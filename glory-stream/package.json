@@ -1,0 +1,7 @@
+{
+  "name": "glory-stream-convocation",
+  "version": 1.0,
+  "dependencies": {
+    "@vercel/kv": "^2.0.0"
+  }
+}

@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Glory Stream Convocation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --deep-blue: #0d3b66;
+            --deep-blue-dark: #082b4d;
+            --radiant-gold: #ffca28;
+            --light-bg: #fafafa;
+            --text-dark: #222222;
+            --white: #ffffff;
+            --bottom-nav-height: 65px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding-top: 60px;
+            -webkit-overflow-scrolling: touch;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
+        .view-container { display: none; }
+        .view-container.active-view { display: block; }
+
+        /* --- TOP HEADER BAR --- */
+        .app-titlebar {
+            position: fixed; top: 0; left: 0; width: 100%; height: 60px;
+            background-color: var(--deep-blue-dark); display: flex;
+            justify-content: space-between; align-items: center;
+            padding: 0 15px; z-index: 1000;
+            border-bottom: 2px solid var(--radiant-gold);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .titlebar-title {
+            font-family: 'Bubblegum Sans', cursive; color: var(--radiant-gold);
+            font-size: 1.2rem; letter-spacing: 1px; text-decoration: none; cursor: pointer;
+        }
+
+        .right-controls { display: flex; align-items: center; gap: 15px; }
+
+        .desktop-nav { display: none; gap: 25px; position: relative; }
+        
+        .desktop-nav a {
+            color: #e0e0e0; text-decoration: none; font-family: 'Bubblegum Sans', cursive;
+            font-size: 1rem; position: relative; padding-bottom: 5px; transition: all 0.3s; cursor: pointer;
+        }
+        .desktop-nav a:hover { color: var(--radiant-gold); }
+        .desktop-nav a::after {
+            content: ''; position: absolute; width: 0; height: 3px;
+            bottom: 0; left: 50%; transform: translateX(-50%);
+            background-color: var(--radiant-gold); transition: width 0.3s ease;
+        }
+        .desktop-nav a:hover::after { width: 100%; }
+
+        .dropdown { position: relative; display: inline-block; }
+        .dropdown-content {
+            display: none; position: absolute; top: 30px; left: -10px;
+            background-color: var(--deep-blue-dark); min-width: 180px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3); z-index: 1001; border-radius: 8px;
+            border: 1px solid var(--radiant-gold); overflow: hidden;
+        }
+        .dropdown:hover .dropdown-content { display: block; }
+        .dropdown-content a {
+            color: #e0e0e0; padding: 12px 16px; text-decoration: none; display: block;
+            font-family: 'Bubblegum Sans', cursive; font-size: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .dropdown-content a:hover { background-color: var(--deep-blue); color: var(--radiant-gold); }
+
+        .window-controls { display: flex; gap: 8px; }
+        .ctrl-btn {
+            width: 14px; height: 14px; border-radius: 50%;
+            border: 1px solid rgba(0,0,0,0.2); cursor: pointer; transition: all 0.2s;
+        }
+        .ctrl-btn:hover { transform: scale(1.2); filter: brightness(1.2); }
+        .ctrl-btn.minimize { background-color: #ffbd2e; }
+        .ctrl-btn.maximize { background-color: #28c940; }
+        .ctrl-btn.close { background-color: #ff5f57; }
+
+        /* --- MOBILE APP BOTTOM NAVIGATION --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            height: var(--bottom-nav-height); background-color: var(--white);
+            display: flex; justify-content: space-around; align-items: center;
+            z-index: 1000; border-top: 1px solid #e0e0e0;
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center;
+            text-decoration: none; color: #000000; transition: color 0.2s; padding: 5px; cursor: pointer;
+        }
+        .nav-item.active { color: var(--deep-blue); font-weight: bold; }
+        .nav-icon { width: 22px; height: 22px; margin-bottom: 4px; }
+        .nav-label { font-family: 'Bubblegum Sans', cursive; font-size: 0.7rem; }
+
+        .mobile-sections-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 2000; display: none;
+            justify-content: center; align-items: flex-end;
+        }
+        .mobile-sections-panel {
+            background: var(--white); width: 100%; border-top-left-radius: 20px;
+            border-top-right-radius: 20px; padding: 30px 20px 50px; transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        .mobile-sections-overlay.active { display: flex; }
+        .mobile-sections-overlay.active .mobile-sections-panel { transform: translateY(0); }
+        .sections-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .section-btn {
+            background: var(--light-bg); border: 1px solid var(--deep-blue); padding: 15px;
+            border-radius: 10px; text-align: center; font-family: 'Bubblegum Sans', cursive;
+            color: var(--deep-blue); cursor: pointer; transition: all 0.2s;
+        }
+        .section-btn:hover { background: var(--deep-blue); color: var(--radiant-gold); }
+
+        .shutdown-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 3000; display: none;
+            flex-direction: column; justify-content: center; align-items: center;
+            color: white; text-align: center; padding: 20px;
+        }
+        .shutdown-overlay.active { display: flex; }
+        .shutdown-overlay h2 { font-family: 'Bubblegum Sans', cursive; color: var(--radiant-gold); font-size: 3rem; margin-bottom: 10px; }
+
+        header {
+            background-color: var(--deep-blue); color: var(--radiant-gold);
+            text-align: center; padding: 60px 15px; border-bottom: 5px solid var(--radiant-gold);
+        }
+        h1 { font-family: 'Bubblegum Sans', cursive; font-size: clamp(2.2rem, 8vw, 4rem); margin-bottom: 10px; letter-spacing: 2px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); line-height: 1.1; }
+        section { padding: 40px 0; border-bottom: 1px solid #e0e0e0; }
+        section:last-child { border-bottom: none; }
+        h2 { font-family: 'Bubblegum Sans', cursive; color: var(--deep-blue); font-size: clamp(1.8rem, 6vw, 2.5rem); margin-bottom: 20px; text-align: center; }
+        h3 { font-family: 'Bubblegum Sans', cursive; color: var(--deep-blue); font-size: clamp(1.4rem, 4vw, 1.8rem); margin-bottom: 10px; }
+        h4 { font-family: 'Bubblegum Sans', cursive; color: var(--deep-blue); font-size: 1.2rem; margin-bottom: 8px; }
+        p { font-size: 1.1rem; margin-bottom: 15px; text-align: justify; }
+        .scripture-ref { font-style: italic; color: #555; font-size: 0.95rem; }
+        .highlight-text { font-size: 1.2rem; font-weight: bold; color: var(--deep-blue); text-align: center; margin: 30px 0; padding: 0 10px; }
+
+        .name-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        .name-card { background: var(--white); padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 4px solid var(--radiant-gold); }
+        
+        .vm-container { background-color: var(--deep-blue); color: var(--white); padding: 30px 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
+        .vm-container h2 { color: var(--radiant-gold); }
+        .vm-container h3 { color: var(--radiant-gold); margin-top: 30px; }
+        .vm-container p { color: #e0e0e0; text-align: center; }
+
+        .pillars-grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 30px; }
+        .pillar-card { background: var(--white); padding: 25px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); border-left: 5px solid var(--deep-blue); }
+        .pillar-card h3 { font-size: 1.4rem; display: flex; align-items: center; }
+        .pillar-card h3 span { color: var(--radiant-gold); margin-right: 10px; font-size: 1.6rem; }
+
+        .leadership-section { text-align: center; }
+        .leader-name { font-family: 'Bubblegum Sans', cursive; font-size: clamp(1.6rem, 5vw, 2.2rem); color: var(--deep-blue); margin-bottom: 15px; }
+
+        .founder-img-container {
+            width: 180px; height: 180px; margin: 0 auto 25px; position: relative;
+            border-radius: 50%; border: 4px solid var(--radiant-gold);
+            box-shadow: 0 8px 20px rgba(13, 59, 102, 0.2); overflow: hidden;
+        }
+        .founder-img { width: 100%; height: 100%; object-fit: cover; }
+
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            background-color: var(--deep-blue); color: var(--radiant-gold);
+            font-family: 'Bubblegum Sans', cursive; padding: 10px 20px;
+            border-radius: 8px; text-decoration: none; font-size: 1rem;
+            margin-bottom: 30px; border: none; cursor: pointer;
+        }
+        .back-btn:hover { background-color: var(--radiant-gold); color: var(--deep-blue-dark); }
+
+        .gospel-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
+        .gospel-tab {
+            padding: 10px 20px; background: var(--white); border: 2px solid var(--deep-blue);
+            border-radius: 30px; font-family: 'Bubblegum Sans', cursive; color: var(--deep-blue);
+            cursor: pointer; transition: all 0.2s;
+        }
+        .gospel-tab.active-tab { background: var(--deep-blue); color: var(--radiant-gold); }
+        .gospel-sub-view { display: none; }
+        .gospel-sub-view.active-sub-view { display: block; }
+
+        .feed-container { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+        .post-card {
+            background: var(--white); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            overflow: hidden; transition: transform 0.2s;
+        }
+        .post-card:hover { transform: translateY(-3px); }
+        .post-header { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
+        .post-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--deep-blue); color: var(--radiant-gold); display: flex; justify-content: center; align-items: center; font-family: 'Bubblegum Sans', cursive; margin-right: 10px; }
+        .post-user-info { font-family: 'Bubblegum Sans', cursive; color: var(--deep-blue); }
+        .post-date { font-size: 0.8rem; color: #777; font-family: sans-serif; }
+        .post-body { padding: 20px; font-size: 1.1rem; line-height: 1.6; }
+        .post-body p { text-align: left; margin-bottom: 10px; }
+        .post-scripture { color: var(--deep-blue); font-weight: bold; font-style: italic; }
+        .post-actions { display: flex; justify-content: space-around; padding: 10px; border-top: 1px solid #eee; background: #fafafa; }
+        .action-btn {
+            background: none; border: none; cursor: pointer; color: #555;
+            display: flex; align-items: center; gap: 5px; font-family: 'Bubblegum Sans', cursive; font-size: 0.9rem; transition: color 0.2s;
+        }
+        .action-btn:hover { color: var(--deep-blue); }
+        .action-btn.liked { color: #e74c3c; }
+        .action-btn.saved { color: var(--radiant-gold); }
+
+        .admin-container { display: flex; min-height: 80vh; font-family: sans-serif; }
+        .admin-sidebar { width: 250px; background: var(--deep-blue-dark); color: var(--white); padding: 20px; }
+        .admin-sidebar h3 { color: var(--radiant-gold); margin-bottom: 20px; text-align: center; }
+        .admin-nav-item { display: block; padding: 10px; color: #ddd; text-decoration: none; margin-bottom: 5px; border-radius: 5px; cursor: pointer; }
+        .admin-nav-item:hover, .admin-nav-item.active-admin { background: var(--deep-blue); color: var(--radiant-gold); }
+        .admin-main { flex: 1; padding: 30px; background: var(--light-bg); }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .admin-card { background: var(--white); padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .admin-table th, .admin-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        .admin-table th { background: var(--deep-blue); color: var(--radiant-gold); font-family: 'Bubblegum Sans', cursive; }
+        .btn-sm { padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem; margin-right: 5px; }
+        .btn-edit { background: #3498db; color: white; }
+        .btn-delete { background: #e74c3c; color: white; }
+        .admin-form-group { margin-bottom: 15px; }
+        .admin-form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: var(--deep-blue); }
+        .admin-form-group input, .admin-form-group textarea, .admin-form-group select {
+            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-family: inherit;
+        }
+        .admin-form-group textarea { height: 120px; resize: vertical; }
+        .btn-submit { background: var(--deep-blue); color: var(--radiant-gold); padding: 10px 20px; border: none; border-radius: 5px; font-family: 'Bubblegum Sans', cursive; font-size: 1.1rem; cursor: pointer; }
+        .admin-sub-view { display: none; }
+        .admin-sub-view.active-admin-sub { display: block; }
+
+        footer { background-color: var(--deep-blue-dark); color: var(--white); padding: 50px 20px 30px 20px; text-align: center; }
+        .footer-content { max-width: 1000px; margin: 0 auto; }
+        .footer-main-row { display: flex; flex-direction: column; gap: 30px; margin-bottom: 40px; align-items: center; }
+        .footer-info { width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .footer-title { font-family: 'Bubblegum Sans', cursive; color: var(--radiant-gold); font-size: 1.8rem; margin-bottom: 15px; }
+        .contact-row { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
+        .contact-item { display: inline-flex; align-items: center; gap: 10px; color: #e0e0e0; text-decoration: none; font-size: 1rem; background: rgba(255,255,255,0.05); padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease; }
+        .contact-item:hover { color: var(--radiant-gold); background: rgba(255,255,255,0.1); transform: translateY(-3px); }
+        .contact-icon { width: 18px; height: 18px; fill: currentColor; }
+        .dev-credit { display: flex; align-items: center; justify-content: center; }
+        .dev-btn { display: inline-block; background-color: transparent; color: var(--radiant-gold); font-family: 'Bubblegum Sans', cursive; padding: 12px 24px; border: 2px solid var(--radiant-gold); border-radius: 8px; text-decoration: none; font-size: 1rem; letter-spacing: 0.5px; transition: all 0.3s ease; }
+        .dev-btn:hover { background-color: var(--radiant-gold); color: var(--deep-blue-dark); transform: translateY(-3px); box-shadow: 0 6px 20px rgba(255, 202, 40, 0.3); }
+        .footer-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 20px 0; }
+        .footer-copyright { font-size: 0.9rem; color: rgba(255,255,255,0.4); }
+        .admin-footer-link { color: rgba(255,255,255,0.2); font-size: 0.8rem; cursor: pointer; text-decoration: underline; }
+
+        @media (max-width: 767px) {
+            body { padding-bottom: var(--bottom-nav-height); }
+            footer { padding-bottom: calc(var(--bottom-nav-height) + 20px); }
+            .founder-img-container { width: 150px; height: 150px; }
+            .admin-container { flex-direction: column; }
+            .admin-sidebar { width: 100%; padding: 15px; }
+            .admin-nav-item { display: inline-block; margin-right: 5px; }
+        }
+
+        @media (min-width: 768px) {
+            .bottom-nav { display: none; }
+            .desktop-nav { display: flex; }
+            body { padding-bottom: 0; }
+            .name-grid { grid-template-columns: 1fr 1fr 1fr; }
+            .pillars-grid { grid-template-columns: 1fr 1fr; }
+            .app-titlebar { height: 80px; padding: 0 50px; }
+            .titlebar-title { font-size: 1.8rem; }
+            .desktop-nav { gap: 30px; }
+            .desktop-nav a { font-size: 1.2rem; }
+            .right-controls { gap: 30px; }
+            .window-controls { gap: 12px; }
+            .ctrl-btn { width: 16px; height: 16px; }
+            .footer-main-row { flex-direction: row; justify-content: space-between; align-items: flex-end; text-align: left; }
+            .footer-info { width: auto; align-items: flex-start; }
+            .contact-row { justify-content: flex-start; gap: 20px; }
+            .dev-credit { justify-content: flex-end; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP HEADER BAR -->
+    <div class="app-titlebar">
+        <a class="titlebar-title" onclick="showView('home-view')">THE GLORY STREAM</a>
+        <div class="right-controls">
+            <div class="desktop-nav">
+                <div class="dropdown">
+                    <a class="dropbtn">Home</a>
+                    <div class="dropdown-content">
+                        <a onclick="goToHomeSection('mandate')">Mandate</a>
+                        <a onclick="goToHomeSection('name')">The Name</a>
+                        <a onclick="goToHomeSection('vision-mission')">Vision & Mission</a>
+                        <a onclick="goToHomeSection('pillars')">Pillars</a>
+                        <a onclick="goToHomeSection('home-leadership')">Leadership</a>
+                    </div>
+                </div>
+                <a onclick="showView('band-view')">Band</a>
+                <a onclick="showView('gospel-view')">Gospel</a>
+            </div>
+            <div class="window-controls">
+                <div class="ctrl-btn minimize" onclick="minimizeWindow()"></div>
+                <div class="ctrl-btn maximize" onclick="maximizeWindow()"></div>
+                <div class="ctrl-btn close" onclick="closeWindow()"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MOBILE APP BOTTOM NAV -->
+    <nav class="bottom-nav">
+        <a class="nav-item active" id="nav-home" onclick="showView('home-view')">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            <span class="nav-label">Home</span>
+        </a>
+        <a class="nav-item" id="nav-band" onclick="showView('band-view')">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+            <span class="nav-label">Band</span>
+        </a>
+        <a class="nav-item" id="nav-gospel" onclick="showView('gospel-view')">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <span class="nav-label">Gospel</span>
+        </a>
+        <a class="nav-item" onclick="openSectionsMenu()">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+            <span class="nav-label">Sections</span>
+        </a>
+    </nav>
+
+    <div class="mobile-sections-overlay" id="mobileSectionsMenu" onclick="closeSectionsMenu(event)">
+        <div class="mobile-sections-panel">
+            <h2 style="margin-bottom: 20px; font-size: 1.5rem;">Jump to Section</h2>
+            <div class="sections-grid">
+                <div class="section-btn" onclick="goToHomeSection('mandate')">Mandate</div>
+                <div class="section-btn" onclick="goToHomeSection('name')">The Name</div>
+                <div class="section-btn" onclick="goToHomeSection('vision-mission')">Vision</div>
+                <div class="section-btn" onclick="goToHomeSection('pillars')">Pillars</div>
+                <div class="section-btn" onclick="goToHomeSection('home-leadership')">Leadership</div>
+                <div class="section-btn" onclick="showView('admin-view')">Admin</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="shutdown-overlay" id="shutdownScreen">
+        <h2>Until Next Time!</h2>
+        <p>Keep living the transformational worship lifestyle.</p>
+    </div>
+
+    <!-- VIEW 1: HOME -->
+    <div id="home-view" class="view-container active-view">
+        <header id="mandate"><h1>THE GLORY STREAM CONVOCATION</h1></header>
+        <div class="container">
+            <section>
+                <h2>The Mandate</h2>
+                <p>Glory Stream Convocation is a conventional worship gathering where the true Gospel of Jesus Christ is preached, Spirit-filled praise and worship music is unleashed, and believers are immersed in the tangible presence of God to become agents of His kingdom in their world.</p>
+                <p>We are a movement and a sacred assembly. Born from a deep hunger for authentic worship and biblical truth, Glory Stream Convocation exists to bridge the gap between the reverence of the historic faith and the freedom of Spirit-led revival.</p>
+                <div class="highlight-text">Under the leadership of PHILPEACE, this movement is issuing a call to the nations: Come out of spiritual complacency, worship God truly and Live transformed.</div>
+            </section>
+            <section id="name">
+                <h2>The Name</h2>
+                <div class="name-grid">
+                    <div class="name-card"><h3>GLORY</h3><p>The manifest, tangible presence of God. It is the revelation of His character, His holiness, and His saving power, demonstrated fully through the life, death, and resurrection of Jesus Christ.</p></div>
+                    <div class="name-card"><h3>STREAM</h3><p>The continuous, ongoing work and filling of the Holy Spirit in the life of the believer. It represents the constant supply of God’s grace, power, and life that sustains us daily.</p></div>
+                    <div class="name-card"><h3>CONVOCATION</h3><p>A formal, sovereign calling together of God's people. We do not gather by accident; we are divinely summoned by the Spirit to assemble for worship, the preaching of the Word, and mutual edification.</p></div>
+                </div>
+            </section>
+            <section id="vision-mission">
+                <div class="vm-container">
+                    <h2>Our Vision</h2>
+                    <p><strong>To foster a transformational worship lifestyle, becoming a generation that carries the presence and power of God into every sphere of life.</strong></p>
+                    <p>The vision goes beyond the event. We want that encounter to reshape everyday lives. A transformational worship lifestyle means that worship is no longer just an activity, but our core identity.</p>
+                    <p class="scripture-ref" style="color: #ddd;">{Colossians 3:17, 23, Isaiah 43:7,21}</p>
+                    <h2 style="margin-top: 50px;">Our Mission</h2>
+                    <p><strong>To cultivate an holistic culture of worship that begins in private devotion and overflows into corporate celebration, convening Spirit-filled gatherings where the true Gospel is preached and the Holy Spirit brings life.</strong></p>
+                </div>
+            </section>
+            <section id="pillars">
+                <h2>Our Four Pillars</h2>
+                <div class="pillars-grid">
+                    <div class="pillar-card"><h3><span>01</span> The True Gospel – Our Anchor</h3><p>Jesus Christ is the foundation. We unashamedly preach Christ crucified, risen, and returning. Every song, every prayer, and every sermon points back to the cross.</p></div>
+                    <div class="pillar-card"><h3><span>02</span> Spirit-Filled Worship - Our Response</h3><p>We prioritize authentic, heartfelt praise and intimate worship, making room for the spontaneous leading of the Spirit, prophetic ministry, and spiritual gifts, all exercised biblically.</p></div>
+                    <div class="pillar-card"><h3><span>03</span> Biblical Conviction - The Foundation</h3><p>We are deeply rooted in the authority of Scripture. We do not chase emotional experiences; we submit our emotions and experiences to the Word of God.</p></div>
+                    <div class="pillar-card"><h3><span>04</span> Lifestyle Transformation - The Outcome</h3><p>A true encounter with the Holy Spirit always results in transformed character, bold witness, and active compassion. We are called to be salt and light.</p></div>
+                </div>
+            </section>
+            <section id="home-leadership" class="leadership-section">
+                <h2>The Leadership</h2>
+                <div style="background: var(--white); padding: 40px 25px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); max-width: 700px; margin: 0 auto; text-align: center;">
+                    <div class="founder-img-container"><img src="phil.jpg" alt="PHILPEACE" class="founder-img"></div>
+                    <div class="leader-name">Founder & Lead Convener: PHILPEACE</div>
+                    <p style="color: #222;">PHILPEACE is a visionary, worshipper, and carrier of the Gospel, called to lead this generation into a deeper relationship with God.</p>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- VIEW 2: BAND -->
+    <div id="band-view" class="view-container">
+        <header><h1>THE ALTAR SOUND BAND</h1></header>
+        <div class="container">
+            <button class="back-btn" onclick="showView('home-view')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg> Back to Home</button>
+            <section style="padding-top: 0;">
+                <p style="text-align: center; max-width: 700px; margin: 0 auto 40px; font-size: 1.2rem;">The leading force of our worship, comprising 15 anointed musicians and vocalists dedicated to creating an atmosphere where the Holy Spirit moves freely.</p>
+                <h2 style="margin-bottom: 30px;">Instrumentalists</h2>
+                <div class="name-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+                    <div class="name-card"><h3>Justus Mwangi</h3><p style="font-style: italic; margin:0; color:#555;">JM Solo - Lead Guitarist</p></div>
+                    <div class="name-card"><h3>Seth Jatia</h3><p style="font-style: italic; margin:0; color:#555;">Jatia-Bass - Bassist</p></div>
+                    <div class="name-card"><h3>Meshack Melau</h3><p style="font-style: italic; margin:0; color:#555;">Pilau - Drums</p></div>
+                    <div class="name-card"><h3>Gerald Mwangi</h3><p style="font-style: italic; margin:0; color:#555;">G-Max - Keys</p></div>
+                    <div class="name-card"><h3>Samuel Barasa</h3><p style="font-style: italic; margin:0; color:#555;">Keys</p></div>
+                    <div class="name-card"><h3>Darius Barasa</h3><p style="font-style: italic; margin:0; color:#555;">King Darius - Keys</p></div>
+                </div>
+                <h2 style="margin-top: 50px; margin-bottom: 30px;">Vocalists</h2>
+                <div class="pillars-grid">
+                    <div class="pillar-card"><h3><span>S</span> Soprano</h3><p>Linet Nzisa<br>Brenda Hephy</p></div>
+                    <div class="pillar-card"><h3><span>A</span> Alto</h3><p>Esther Namsifu<br>Mary Nyaguthii<br>Ivy Wambungu<br>Eunice Mutuku</p></div>
+                    <div class="pillar-card"><h3><span>T</span> Tenor</h3><p>John Kimwele<br>Shadrack Baraka<br>Philip Muuo</p></div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- VIEW 3: GOSPEL -->
+    <div id="gospel-view" class="view-container">
+        <header><h1>THE GOSPEL</h1></header>
+        <div class="container">
+            <button class="back-btn" onclick="showView('home-view')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg> Back to Home</button>
+            
+            <div class="gospel-tabs">
+                <button class="gospel-tab active-tab" onclick="showGospelSub('gospel-message')">The Gospel</button>
+                <button class="gospel-tab" onclick="showGospelSub('gospel-daily')">Daily Series</button>
+                <button class="gospel-tab" onclick="showGospelSub('gospel-discipleship')">Discipleship</button>
+                <button class="gospel-tab" onclick="showGospelSub('gospel-connect')">Connect</button>
+            </div>
+
+            <div id="gospel-message" class="gospel-sub-view active-sub-view">
+                <div class="vm-container">
+                    <h2 style="color:var(--radiant-gold); margin-top:0;">What is the Gospel?</h2>
+                    <p>The word “Gospel” comes from the Greek word <em>euangelion</em>, meaning “good news.” In Christian faith, the Gospel is the good news about the life, death, resurrection, and ascension of Jesus Christ for the salvation of mankind, and the hope for the second coming of Jesus Christ. It’s the heart of Christian belief — God’s rescue (redemption) plan to redeem fallen humanity through Jesus.</p>
+                </div>
+                <div class="pillars-grid" style="margin-top:20px;">
+                    <div class="pillar-card"><h3><span>1</span> God’s Original Design</h3><p>God created the world good, perfect, and without sin. Humanity was made in God’s image (Genesis 1:26–27) to glorify, worship, and fellowship with Him. Truth: Life has purpose, and mankind was designed to live in harmony with God.</p></div>
+                    <div class="pillar-card"><h3><span>2</span> The Fall of Man</h3><p>Sin entered the world through Adam and Eve’s disobedience (Genesis 3). Sin separated humanity from God, bringing death, suffering, and spiritual separation (Romans 3:23, Romans 6:23). Truth: All people are born in sin and are incapable of saving themselves.</p></div>
+                    <div class="pillar-card"><h3><span>3</span> God’s Redemptive Plan</h3><p>God, in His love, promised a Savior (Genesis 3:15). Through Israel, prophets spoke of a coming Messiah who would bear sin and restore man’s relationship with God (Isaiah 53, Micah 5:2).</p></div>
+                    <div class="pillar-card"><h3><span>4</span> The Life of Jesus Christ</h3><p>Jesus was born of a virgin (Matthew 1:23), fully God and fully man (John 1:14). He lived a sinless life, taught truth, performed miracles, and revealed God’s character (Hebrews 4:15). Truth: Jesus is God’s perfect representative to man.</p></div>
+                    <div class="pillar-card"><h3><span>5</span> The Death of Jesus</h3><p>Jesus willingly died on the cross for the sins of humanity (1 Peter 2:24). His death satisfied God’s justice and demonstrated His love (Romans 5:8). Truth: Salvation was purchased by the blood of Christ alone.</p></div>
+                    <div class="pillar-card"><h3><span>6</span> The Resurrection</h3><p>On the third day, Jesus rose from the dead (Luke 24:6–7). His resurrection proves His victory over sin, death, and Satan (1 Corinthians 15:3–8). Truth: The resurrection gives believers hope of eternal life.</p></div>
+                    <div class="pillar-card"><h3><span>7</span> Ascension & Lordship</h3><p>Jesus ascended to heaven and is seated at the right hand of God (Acts 1:9–11, Ephesians 1:20–23). He reigns as Lord, intercedes for believers, and will return to judge the world (Philippians 2:9–11).</p></div>
+                    <div class="pillar-card"><h3><span>8</span> Salvation by Grace</h3><p>Salvation is a free gift, not earned by works (Ephesians 2:8–9). It’s received through repentance and faith in Jesus Christ alone (Romans 10:9–10). Truth: Anyone can be saved by trusting in Jesus as Lord and Savior.</p></div>
+                    <div class="pillar-card"><h3><span>9</span> New Life & Transformation</h3><p>Believers are made new, indwelt by the Holy Spirit (2 Corinthians 5:17, Galatians 5:22–23). They grow in holiness, community, and mission. Truth: The gospel transforms lives now and prepares us for eternity.</p></div>
+                    <div class="pillar-card"><h3><span>10</span> The Eternal Hope</h3><p>Believers have the hope of eternal life with God (John 14:1–3). Jesus will return, sin will be finally defeated, and creation will be restored (Revelation 21:1–5). Truth: The gospel secures a glorious eternal future.</p></div>
+                </div>
+            </div>
+
+            <div id="gospel-daily" class="gospel-sub-view">
+                <h2 style="text-align:center;">Daily Encouragement Series</h2>
+                <div class="feed-container" id="daily-feed-container"></div>
+            </div>
+
+            <div id="gospel-discipleship" class="gospel-sub-view">
+                <h2 style="text-align:center;">Discipleship Series</h2>
+                <div class="feed-container" id="discipleship-feed-container"></div>
+            </div>
+
+            <div id="gospel-connect" class="gospel-sub-view">
+                <h2 style="text-align:center;">One-on-One Engagement</h2>
+                <div class="vm-container" style="margin-top:20px;">
+                    <p>Ready to take the next step in your faith journey? Connect with us for personal discipleship, prayer, and mentorship.</p>
+                </div>
+                <div style="max-width: 600px; margin: 30px auto; background: var(--white); padding: 30px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.08);">
+                    <h3 style="text-align:center; margin-bottom:20px;">Contact Form</h3>
+                    <div class="admin-form-group"><input type="text" placeholder="Your Full Name"></div>
+                    <div class="admin-form-group"><input type="email" placeholder="Your Email"></div>
+                    <div class="admin-form-group"><textarea placeholder="How can we walk with you? / Prayer Request"></textarea></div>
+                    <button class="btn-submit" style="width:100%;">Submit Request</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW 4: ADMIN -->
+    <div id="admin-view" class="view-container">
+        <header><h1>ADMIN PORTAL</h1></header>
+        <div class="admin-container">
+            <div class="admin-sidebar">
+                <h3>Dashboard</h3>
+                <a class="admin-nav-item active-admin" onclick="showAdminSub('admin-daily')">Daily Series</a>
+                <a class="admin-nav-item" onclick="showAdminSub('admin-discipleship')">Discipleship</a>
+                <br><br>
+                <button class="back-btn" style="width:100%; justify-content:center;" onclick="showView('home-view')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg> Exit Admin</button>
+            </div>
+            <div class="admin-main">
+                <div id="admin-daily" class="admin-sub-view active-admin-sub">
+                    <div class="admin-header">
+                        <h2>Manage Daily Series</h2>
+                        <button class="btn-submit" onclick="openPostModal('daily')">+ New Post</button>
+                    </div>
+                    <div class="admin-card">
+                        <table class="admin-table">
+                            <thead><tr><th>Title</th><th>Date</th><th>Actions</th></tr></thead>
+                            <tbody id="admin-daily-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="admin-discipleship" class="admin-sub-view">
+                    <div class="admin-header">
+                        <h2>Manage Discipleship Series</h2>
+                        <button class="btn-submit" onclick="openPostModal('discipleship')">+ New Post</button>
+                    </div>
+                    <div class="admin-card">
+                        <table class="admin-table">
+                            <thead><tr><th>Title</th><th>Date</th><th>Actions</th></tr></thead>
+                            <tbody id="admin-discipleship-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="postModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:4000; justify-content:center; align-items:center;">
+        <div style="background:var(--white); width:90%; max-width:600px; padding:30px; border-radius:12px; position:relative;">
+            <button onclick="closePostModal()" style="position:absolute; top:10px; right:15px; background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+            <h2 id="modalTitle" style="margin-bottom:20px;">New Post</h2>
+            <input type="hidden" id="postIdField">
+            <input type="hidden" id="postTypeField">
+            <div class="admin-form-group"><label>Title / Theme</label><input type="text" id="postTitle"></div>
+            <div class="admin-form-group"><label>Scripture Reference</label><input type="text" id="postScripture"></div>
+            <div class="admin-form-group"><label>Content</label><textarea id="postContent" style="height:200px;"></textarea></div>
+            <button class="btn-submit" onclick="savePost()" style="width:100%;">Save Post</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-main-row">
+                <div class="footer-info">
+                    <h3 class="footer-title">Glory Stream Convocation</h3>
+                    <div class="contact-row">
+                        <a href="mailto:p5062e@gmail.com" class="contact-item"><svg class="contact-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><span>p5062e@gmail.com</span></a>
+                        <a href="tel:0702987550" class="contact-item"><svg class="contact-icon" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg><span>0702987550</span></a>
+                    </div>
+                </div>
+                <div class="dev-credit">
+                    <a href="https://philvin-dev.vercel.app" target="_blank" class="dev-btn">DEVELOPED BY PHILVIN-DEV</a>
+                </div>
+            </div>
+            <div class="footer-divider"></div>
+            <p class="footer-copyright">Copyright &copy; <span id="currentYear"></span> Glory Stream Convocation. <span class="admin-footer-link" onclick="showView('admin-view')">Admin</span></p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        
+        function minimizeWindow() { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); }
+        function maximizeWindow() {
+            if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(err => {}); } 
+            else if (document.exitFullscreen) { document.exitFullscreen(); }
+        }
+        function closeWindow() { document.getElementById('shutdownScreen').classList.add('active'); }
+        document.getElementById('shutdownScreen').addEventListener('click', function() { this.classList.remove('active'); });
+
+        function showView(viewId) {
+            document.querySelectorAll('.view-container').forEach(view => view.classList.remove('active-view'));
+            document.getElementById(viewId).classList.add('active-view');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.querySelectorAll('.bottom-nav .nav-item').forEach(item => item.classList.remove('active'));
+            const navMap = { 'home-view': 'nav-home', 'band-view': 'nav-band', 'gospel-view': 'nav-gospel' };
+            if (navMap[viewId]) document.getElementById(navMap[viewId]).classList.add('active');
+            if(viewId === 'gospel-view') renderFeeds();
+            if(viewId === 'admin-view') renderAdminTables();
+        }
+
+        function goToHomeSection(sectionId) {
+            showView('home-view');
+            setTimeout(() => document.getElementById(sectionId).scrollIntoView({behavior:'smooth'}), 100);
+        }
+
+        function openSectionsMenu() { document.getElementById('mobileSectionsMenu').classList.add('active'); }
+        function closeSectionsMenu(e) { if(e.target === document.getElementById('mobileSectionsMenu')) document.getElementById('mobileSectionsMenu').classList.remove('active'); }
+
+        function showGospelSub(subId) {
+            document.querySelectorAll('.gospel-sub-view').forEach(v => v.classList.remove('active-sub-view'));
+            document.getElementById(subId).classList.add('active-sub-view');
+            document.querySelectorAll('.gospel-tab').forEach(t => t.classList.remove('active-tab'));
+            event.target.classList.add('active-tab');
+        }
+
+        function showAdminSub(subId) {
+            document.querySelectorAll('.admin-sub-view').forEach(v => v.classList.remove('active-admin-sub'));
+            document.getElementById(subId).classList.add('active-admin-sub');
+            document.querySelectorAll('.admin-nav-item').forEach(n => n.classList.remove('active-admin'));
+            event.target.classList.add('active-admin');
+        }
+
+        // --- DATABASE API CALLS (Vercel KV) ---
+        async function getPosts(type) {
+            try {
+                const response = await fetch(`/api/posts?type=${type}`);
+                if (!response.ok) throw new Error('Failed to fetch');
+                return await response.json();
+            } catch (error) {
+                console.error("Error getting posts:", error);
+                return [];
+            }
+        }
+
+        async function savePostToDB(type, postData) {
+            try {
+                const response = await fetch('/api/posts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type, ...postData })
+                });
+                return response.ok;
+            } catch (error) {
+                console.error("Error saving post:", error);
+                return false;
+            }
+        }
+
+        async function deletePostFromDB(type, id) {
+            try {
+                const response = await fetch('/api/posts', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type, id })
+                });
+                return response.ok;
+            } catch (error) {
+                console.error("Error deleting post:", error);
+                return false;
+            }
+        }
+
+        // --- RENDER FEEDS ---
+        async function renderFeeds() {
+            await renderFeed('daily', 'daily-feed-container');
+            await renderFeed('discipleship', 'discipleship-feed-container');
+        }
+
+        async function renderFeed(type, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '<p style="text-align:center;">Loading...</p>';
+            const posts = await getPosts(type);
+            container.innerHTML = '';
+            
+            if(posts.length === 0) {
+                container.innerHTML = '<p style="text-align:center;">No posts yet. Check back soon!</p>';
+                return;
+            }
+
+            posts.reverse().forEach(post => {
+                const card = document.createElement('div');
+                card.className = 'post-card';
+                card.innerHTML = `
+                    <div class="post-header">
+                        <div class="post-avatar">GS</div>
+                        <div>
+                            <div class="post-user-info">Glory Stream Convocation</div>
+                            <div class="post-date">${post.date} • ${type === 'daily' ? 'Daily Encouragement' : 'Discipleship'}</div>
+                        </div>
+                    </div>
+                    <div class="post-body">
+                        <h4 style="color:var(--deep-blue); margin-bottom:5px;">${post.title}</h4>
+                        <p class="post-scripture">${post.scripture}</p>
+                        <p>${post.content}</p>
+                    </div>
+                    <div class="post-actions">
+                        <button class="action-btn" onclick="reactPost(this, 'liked')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> Like</button>
+                        <button class="action-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Comment</button>
+                        <button class="action-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg> Share</button>
+                        <button class="action-btn" onclick="reactPost(this, 'saved')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg> Save</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function reactPost(btn, className) {
+            if(btn.classList.contains(className)) btn.classList.remove(className);
+            else btn.classList.add(className);
+        }
+
+        // --- ADMIN LOGIC ---
+        async function renderAdminTables() {
+            await renderAdminTable('daily', 'admin-daily-table');
+            await renderAdminTable('discipleship', 'admin-discipleship-table');
+        }
+
+        async function renderAdminTable(type, tableId) {
+            const tbody = document.getElementById(tableId);
+            const posts = await getPosts(type);
+            tbody.innerHTML = '';
+            posts.forEach(post => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${post.title}</td>
+                    <td>${post.date}</td>
+                    <td>
+                        <button class="btn-sm btn-edit" onclick="editPost('${type}', ${post.id})">Edit</button>
+                        <button class="btn-sm btn-delete" onclick="deletePost('${type}', ${post.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openPostModal(type, id = null) {
+            document.getElementById('postModal').style.display = 'flex';
+            document.getElementById('postTypeField').value = type;
+            
+            if (id) {
+                getPosts(type).then(posts => {
+                    const post = posts.find(p => p.id === id);
+                    if(post) {
+                        document.getElementById('postIdField').value = post.id;
+                        document.getElementById('postTitle').value = post.title;
+                        document.getElementById('postScripture').value = post.scripture;
+                        document.getElementById('postContent').value = post.content;
+                        document.getElementById('modalTitle').innerText = 'Edit Post';
+                    }
+                });
+            } else {
+                document.getElementById('postIdField').value = '';
+                document.getElementById('postTitle').value = '';
+                document.getElementById('postScripture').value = '';
+                document.getElementById('postContent').value = '';
+                document.getElementById('modalTitle').innerText = 'New Post';
+            }
+        }
+
+        function closePostModal() {
+            document.getElementById('postModal').style.display = 'none';
+        }
+
+        async function savePost() {
+            const type = document.getElementById('postTypeField').value;
+            const id = document.getElementById('postIdField').value;
+            const postData = {
+                title: document.getElementById('postTitle').value,
+                scripture: document.getElementById('postScripture').value,
+                content: document.getElementById('postContent').value,
+                date: new Date().toISOString().split('T')[0]
+            };
+
+            if (id) postData.id = parseInt(id);
+
+            const success = await savePostToDB(type, postData);
+            if (success) {
+                closePostModal();
+                renderAdminTables();
+                renderFeeds();
+            } else {
+                alert("Error saving post. Check console.");
+            }
+        }
+
+        function editPost(type, id) { openPostModal(type, id); }
+
+        async function deletePost(type, id) {
+            if(confirm('Are you sure you want to delete this post?')) {
+                const success = await deletePostFromDB(type, id);
+                if (success) {
+                    renderAdminTables();
+                    renderFeeds();
+                } else {
+                    alert("Error deleting post.");
+                }
+            }
+        }
+    </script>
+</body>
+</html>
