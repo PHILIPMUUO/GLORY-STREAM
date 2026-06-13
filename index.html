@@ -3,828 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Glory Stream Convocation</title>
+    <title>The Glory Stream</title>
+    <link rel="icon" href="TGS.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --deep-blue: #0d3b66;
-            --deep-blue-dark: #082b4d;
-            --radiant-gold: #ffca28;
-            --light-bg: #fafafa;
-            --text-dark: #222222;
-            --white: #ffffff;
-            --bottom-nav-height: 65px;
-            --glass-bg: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html { scroll-behavior: smooth; }
-
-        body {
-            font-family: 'Times New Roman', Times, serif;
-            background-color: var(--light-bg);
-            color: var(--text-dark);
-            line-height: 1.6;
-            padding-top: 60px;
-            -webkit-overflow-scrolling: touch;
-            overflow-x: hidden;
-        }
-
-        .container { max-width: 1000px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
-
-        /* --- VIEW MANAGEMENT --- */
-        .view-container { display: none; }
-        .view-container.active-view { display: block; }
-
-        /* --- TOP HEADER BAR --- */
-        .app-titlebar {
-            position: fixed; top: 0; left: 0; width: 100%; height: 60px;
-            background-color: var(--deep-blue-dark); display: flex;
-            justify-content: space-between; align-items: center;
-            padding: 0 15px; z-index: 1000;
-            border-bottom: 2px solid var(--radiant-gold);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-
-        .titlebar-title {
-            font-family: 'Bubblegum Sans', cursive; color: var(--radiant-gold);
-            font-size: 1.2rem; letter-spacing: 1px; text-decoration: none; cursor: pointer;
-        }
-
-        .right-controls { display: flex; align-items: center; gap: 15px; }
-
-        .desktop-nav { display: none; gap: 25px; position: relative; }
+        :root{--deep-blue:#0d3b66;--deep-blue-dark:#082b4d;--deep-blue-darker:#051d36;--radiant-gold:#fec312;--light-bg:#f8f9fa;--text-dark:#000;--text-body:#4a4a4a;--white:#fff;--gray:#64748b;--border-light:#e2e8f0;--bottom-nav-height:65px;--shadow-soft:0 4px 20px rgba(0,0,0,.08);--shadow-medium:0 8px 30px rgba(0,0,0,.12);--transition-fast:0.3s cubic-bezier(.4,0,.2,1)}
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-behavior:smooth}
+        body{background:var(--white);color:var(--text-dark);line-height:1.6;padding-top:70px;overflow-x:hidden}
+        /* Typography Enforcement */
+        body,p,li,div,span,a,td,th,input,textarea,select,button{font-family:'Times New Roman',Times,serif}
+        h1,h2,h3,h4,h5,h6{font-family:'Bubblegum Sans',cursive;color:var(--radiant-gold);text-transform:uppercase}
+        .nav-label,.desktop-nav a,.dropdown-content a,.section-btn,.back-btn,.cta-button,.hero-cta-btn,.gospel-tab,.altar-tab,.action-btn,.titlebar-text,.footer-title,.dev-btn,.admin-sidebar-logo,.btn-submit,.admin-header h2,.post-user-info,.cedar-name,.founder-highlight,.leader-name{font-family:'Bubblegum Sans',cursive;text-transform:uppercase}
         
-        .desktop-nav a {
-            color: #e0e0e0; text-decoration: none; font-family: 'Bubblegum Sans', cursive;
-            font-size: 1rem; position: relative; padding-bottom: 5px; transition: all 0.3s; cursor: pointer;
-        }
-        .desktop-nav a:hover { color: var(--radiant-gold); }
-        .desktop-nav a::after {
-            content: ''; position: absolute; width: 0; height: 3px;
-            bottom: 0; left: 50%; transform: translateX(-50%);
-            background-color: var(--radiant-gold); transition: width 0.3s ease;
-        }
-        .desktop-nav a:hover::after { width: 100%; }
+        .container{max-width:1100px;margin:0 auto;padding:20px;position:relative;z-index:1}
+        .view-container{display:none}.view-container.active-view{display:block}
 
-        /* Desktop Dropdown */
-        .dropdown { position: relative; display: inline-block; }
-        .dropdown-content {
-            display: none; position: absolute; top: 30px; left: -10px;
-            background-color: var(--deep-blue-dark); min-width: 180px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3); z-index: 1001; border-radius: 8px;
-            border: 1px solid var(--radiant-gold); overflow: hidden;
-        }
-        .dropdown:hover .dropdown-content { display: block; }
-        .dropdown-content a {
-            color: #e0e0e0; padding: 12px 16px; text-decoration: none; display: block;
-            font-family: 'Bubblegum Sans', cursive; font-size: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .dropdown-content a:hover { background-color: var(--deep-blue); color: var(--radiant-gold); }
+        /* Header & Nav */
+        .app-titlebar{position:fixed;top:0;left:0;width:100%;height:80px;background:rgba(8,43,77,.95);backdrop-filter:blur(10px);display:flex;justify-content:space-between;align-items:center;padding:0 30px;z-index:1000;border-bottom:1px solid rgba(255,202,40,.2)}
+        .titlebar-brand{display:flex;align-items:center;cursor:pointer;gap:15px;text-decoration:none}
+        .titlebar-logo{height:75px;transition:transform .3s}.titlebar-logo:hover{transform:scale(1.05)}
+        .titlebar-text{font-size:2.2rem;color:var(--radiant-gold);letter-spacing:1px;display:none}
+        .right-controls{display:flex;align-items:center;gap:20px}
+        .desktop-nav{display:none;gap:30px;position:relative}
+        .desktop-nav a{color:#e0e0e0;text-decoration:none;font-size:1.2rem;position:relative;padding-bottom:5px;transition:color var(--transition-fast);cursor:pointer;letter-spacing:1px}
+        .desktop-nav a:hover{color:var(--radiant-gold)}.desktop-nav a::after{content:'';position:absolute;width:0;height:2px;bottom:0;left:0;background:var(--radiant-gold);transition:width .3s ease}.desktop-nav a:hover::after{width:100%}
+        .dropdown{position:relative;display:inline-block}.dropdown-content{display:none;position:absolute;top:30px;left:-20px;background:var(--deep-blue-dark);min-width:250px;box-shadow:var(--shadow-medium);z-index:1001;border-radius:8px;border:1px solid rgba(255,202,40,.2);overflow:hidden}
+        .dropdown:hover .dropdown-content{display:block}.dropdown-content a{color:#e0e0e0;padding:12px 20px;display:block;font-size:1rem;border-bottom:1px solid rgba(255,255,255,.05);transition:all var(--transition-fast)}.dropdown-content a:hover{background:var(--deep-blue);color:var(--radiant-gold);padding-left:25px}
+        .window-controls{display:flex;gap:8px;align-items:center}.ctrl-btn{width:12px;height:12px;border-radius:50%;border:1px solid rgba(0,0,0,.1);cursor:pointer;transition:all .2s}.ctrl-btn:hover{transform:scale(1.2);filter:brightness(1.2)}
+        .ctrl-btn.minimize{background:#ffbd2e}.ctrl-btn.maximize{background:#28c940}.ctrl-btn.close{background:#ff5f57}.ctrl-btn.admin{background:#fff;border:1px solid var(--radiant-gold)}.ctrl-btn.admin:hover{background:var(--radiant-gold)}
 
-        .window-controls { display: flex; gap: 8px; }
-        .ctrl-btn {
-            width: 14px; height: 14px; border-radius: 50%;
-            border: 1px solid rgba(0,0,0,0.2); cursor: pointer; transition: all 0.2s;
-        }
-        .ctrl-btn:hover { transform: scale(1.2); filter: brightness(1.2); }
-        .ctrl-btn.minimize { background-color: #ffbd2e; }
-        .ctrl-btn.maximize { background-color: #28c940; }
-        .ctrl-btn.close { background-color: #ff5f57; }
+        /* Bottom Nav */
+        .bottom-nav{position:fixed;bottom:0;left:0;width:100%;height:var(--bottom-nav-height);background:var(--white);display:flex;justify-content:space-around;align-items:center;z-index:1000;border-top:1px solid var(--border-light);box-shadow:0 -5px 20px rgba(0,0,0,.05)}
+        .nav-item{display:flex;flex-direction:column;align-items:center;text-decoration:none;color:var(--gray);transition:color .2s;padding:5px;cursor:pointer}.nav-item.active{color:var(--deep-blue)}
+        .nav-icon{width:22px;height:22px;margin-bottom:2px}.nav-label{font-size:.75rem}
+        .mobile-sections-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:2000;display:none;justify-content:center;align-items:flex-end}
+        .mobile-sections-panel{background:var(--white);width:100%;border-top-left-radius:20px;border-top-right-radius:20px;padding:30px 20px 50px;transform:translateY(100%);transition:transform .3s ease;max-height:80vh;overflow-y:auto}
+        .mobile-sections-overlay.active{display:flex}.mobile-sections-overlay.active .mobile-sections-panel{transform:translateY(0)}
+        .sections-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.section-btn{background:var(--light-bg);border:1px solid var(--border-light);padding:15px 10px;border-radius:8px;text-align:center;font-size:.9rem;color:var(--deep-blue);cursor:pointer;transition:all .2s}.section-btn:hover{background:var(--deep-blue);color:var(--radiant-gold);border-color:var(--deep-blue)}
+        .shutdown-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);z-index:3000;display:none;flex-direction:column;justify-content:center;align-items:center;color:#fff;text-align:center;padding:20px}.shutdown-overlay.active{display:flex}
 
-        /* --- MOBILE APP BOTTOM NAVIGATION --- */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            height: var(--bottom-nav-height); background-color: var(--white);
-            display: flex; justify-content: space-around; align-items: center;
-            z-index: 1000; border-top: 1px solid #e0e0e0;
-        }
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center;
-            text-decoration: none; color: #000000; transition: color 0.2s; padding: 5px; cursor: pointer;
-        }
-        .nav-item.active { color: var(--deep-blue); font-weight: bold; }
-        .nav-icon { width: 22px; height: 22px; margin-bottom: 4px; }
-        .nav-label { font-family: 'Bubblegum Sans', cursive; font-size: 0.7rem; }
+        /* Main Styles */
+        header{background:var(--deep-blue);color:var(--radiant-gold);text-align:center;padding:60px 15px;border-bottom:5px solid var(--radiant-gold)}
+        h1{font-size:clamp(2.2rem,8vw,4rem);margin-bottom:10px;letter-spacing:2px;line-height:1.1}h2{font-size:clamp(1.8rem,6vw,2.5rem);margin-bottom:20px;text-align:center}h3{font-size:clamp(1.4rem,4vw,1.8rem);margin-bottom:10px}
+        p{font-size:1.1rem;margin-bottom:15px;line-height:1.7;color:var(--text-body)}
+        .vm-container{background:var(--deep-blue);color:#fff;padding:40px 20px;border-radius:12px;text-align:center;margin-bottom:20px}.vm-container p{color:#e0e0e0;text-align:center}
+        .highlight{background:linear-gradient(135deg,var(--deep-blue) 0%,#1a4f82 100%);color:#fff;padding:30px 20px;border-radius:12px;text-align:center;margin-bottom:25px}.highlight p{color:#e0e0e0;text-align:center;max-width:800px;margin:0 auto 15px auto}
+        .card{background:var(--white);padding:25px;border-radius:12px;box-shadow:var(--shadow-soft);margin-bottom:25px;transition:transform .2s,box-shadow .2s;cursor:default}.card:hover{transform:translateY(-5px);box-shadow:var(--shadow-medium)}.card p{color:var(--gray);font-size:1rem;margin:0;text-align:left}
+        .pillar{border-left:5px solid var(--radiant-gold)}.pillar:hover{transform:none;box-shadow:0 4px 6px rgba(0,0,0,.05)}
+        .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px}
+        .leader-name{font-size:clamp(1.6rem,5vw,2.2rem);color:var(--deep-blue);margin-bottom:15px}
+        .founder-img-container{width:180px;height:180px;margin:0 auto 25px;position:relative;border-radius:50%;border:4px solid var(--radiant-gold);box-shadow:0 8px 20px rgba(13,59,102,.2);overflow:hidden}.founder-img{width:100%;height:100%;object-fit:cover}
+        .back-btn{display:inline-flex;align-items:center;gap:8px;background:var(--deep-blue);color:var(--radiant-gold);padding:10px 20px;border-radius:8px;text-decoration:none;font-size:1rem;margin-bottom:30px;border:none;cursor:pointer;transition:background var(--transition-fast)}.back-btn:hover{background:var(--deep-blue-dark)}
+        .gospel-tabs,.altar-tabs{display:flex;justify-content:center;gap:10px;margin-bottom:30px;flex-wrap:wrap}.gospel-tab,.altar-tab{padding:10px 20px;background:var(--white);border:2px solid var(--deep-blue);border-radius:30px;color:var(--deep-blue);cursor:pointer;transition:all .2s}.gospel-tab.active-tab,.altar-tab.active-tab{background:var(--deep-blue);color:var(--radiant-gold)}
+        .gospel-sub-view,.altar-sub-view{display:none}.gospel-sub-view.active-sub-view,.altar-sub-view.active-sub-view{display:block}
+        .feed-container{max-width:600px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+        .post-card{background:var(--white);border-radius:12px;box-shadow:var(--shadow-soft);overflow:hidden;transition:transform .2s;cursor:default}.post-card:hover{transform:translateY(-3px)}
+        .post-header{display:flex;align-items:center;padding:15px;border-bottom:1px solid #eee}.post-avatar{width:40px;height:40px;border-radius:50%;background:var(--deep-blue);color:var(--radiant-gold);display:flex;justify-content:center;align-items:center;font-family:'Bubblegum Sans',cursive;margin-right:10px}.post-user-info{color:var(--deep-blue)}.post-date{font-size:.8rem;color:#777;font-family:sans-serif}
+        .post-body{padding:20px;line-height:1.6}.post-body p{text-align:left;margin-bottom:10px}.post-scripture{color:var(--deep-blue);font-weight:700;font-style:italic}
+        .post-actions{display:flex;justify-content:space-around;padding:10px;border-top:1px solid #eee;background:#fafafa}.action-btn{background:none;border:none;cursor:pointer;color:#555;display:flex;align-items:center;gap:5px;font-size:.9rem;transition:color .2s}.action-btn:hover{color:var(--deep-blue)}.action-btn.liked{color:#e74c3c}.action-btn.saved{color:var(--radiant-gold)}
+        .cedar-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px;margin-top:20px}.cedar-card{background:var(--white);padding:30px 20px;border-radius:16px;box-shadow:var(--shadow-soft);text-align:center;border-top:5px solid var(--deep-blue);transition:transform .2s}.cedar-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-medium)}
+        .cedar-photo{width:140px;height:140px;border-radius:50%;object-fit:cover;border:4px solid var(--radiant-gold);margin-bottom:15px;box-shadow:0 4px 10px rgba(0,0,0,.1)}.cedar-role{font-size:1rem;color:var(--radiant-gold);font-weight:700;font-style:italic;margin-bottom:15px}.cedar-bio{font-size:.95rem;color:var(--text-body);line-height:1.6}
 
-        /* Mobile Sections Slide-up */
-        .mobile-sections-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 2000; display: none;
-            justify-content: center; align-items: flex-end;
-        }
-        .mobile-sections-panel {
-            background: var(--white); width: 100%; border-top-left-radius: 20px;
-            border-top-right-radius: 20px; padding: 30px 20px 50px; transform: translateY(100%);
-            transition: transform 0.3s ease;
-        }
-        .mobile-sections-overlay.active { display: flex; }
-        .mobile-sections-overlay.active .mobile-sections-panel { transform: translateY(0); }
-        .sections-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .section-btn {
-            background: var(--light-bg); border: 1px solid var(--deep-blue); padding: 15px;
-            border-radius: 10px; text-align: center; font-family: 'Bubblegum Sans', cursive;
-            color: var(--deep-blue); cursor: pointer; transition: all 0.2s;
-        }
-        .section-btn:hover { background: var(--deep-blue); color: var(--radiant-gold); }
+        /* Join View */
+        .join-wrapper{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 80px);padding:30px 20px;background:var(--light-bg)}.cta-inner{max-width:700px;width:100%;background:var(--white);padding:40px 30px;border-radius:20px;border:1px solid var(--border-light);text-align:center;box-shadow:var(--shadow-soft)}.cta-inner p{margin-bottom:15px;color:var(--gray);text-align:center}
+        .guidelines-list{text-align:left;margin:0 auto 20px;max-width:400px;padding-left:20px;list-style-type:decimal}.guidelines-list li{font-size:1rem;color:var(--text-body);margin-bottom:8px}
+        .qr-code-container{background:var(--white);padding:15px;border-radius:12px;display:inline-block;margin:10px auto 25px;box-shadow:var(--shadow-soft);border:1px solid var(--border-light)}.qr-code-img{width:200px;height:200px;object-fit:contain;display:block;border-radius:8px}
+        .cta-button{background:var(--deep-blue);color:var(--radiant-gold);border:none;padding:12px 30px;border-radius:50px;font-size:1rem;cursor:pointer;transition:background var(--transition-fast);text-decoration:none;display:inline-flex;align-items:center;gap:10px}.cta-button:hover{background:var(--deep-blue-dark)}
 
-        /* --- OVERLAY --- */
-        .shutdown-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 3000; display: none;
-            flex-direction: column; justify-content: center; align-items: center;
-            color: white; text-align: center; padding: 20px;
-        }
-        .shutdown-overlay.active { display: flex; }
-        .shutdown-overlay h2 { font-family: 'Bubblegum Sans', cursive; color: var(--radiant-gold); font-size: 3rem; margin-bottom: 10px; }
+        /* Admin Pro */
+        .admin-login-box{max-width:400px;margin:100px auto;text-align:center;padding:40px 30px;background:var(--white);border-radius:16px;box-shadow:var(--shadow-medium)}.pin-input-group{display:flex;justify-content:center;gap:10px;margin-bottom:25px}.pin-digit{width:45px;height:50px;text-align:center;font-size:1.5rem;font-weight:700;border:2px solid var(--border-light);border-radius:8px;outline:none;transition:border-color .3s;font-family:sans-serif}.pin-digit:focus{border-color:var(--deep-blue)}.pin-error{color:#e74c3c;font-size:.9rem;display:none;margin-bottom:15px;font-family:sans-serif}
+        .admin-portal{display:flex;min-height:calc(100vh - 80px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f1f5f9}.admin-sidebar{width:260px;background:var(--white);padding:20px 0;display:flex;flex-direction:column;flex-shrink:0;border-right:1px solid var(--border-light)}.admin-sidebar-logo{color:var(--deep-blue);font-size:1.4rem;text-align:center;margin-bottom:30px;padding:0 15px}
+        .admin-nav-link{display:flex;align-items:center;gap:12px;padding:12px 25px;color:var(--text-body);text-decoration:none;cursor:pointer;transition:all .2s;border-left:4px solid transparent;font-size:.95rem;font-weight:500;margin-right:10px;border-radius:0 20px 20px 0}.admin-nav-link:hover{background:var(--light-bg);color:var(--deep-blue)}.admin-nav-link.active-admin{background:rgba(13,59,102,.08);color:var(--deep-blue);border-left-color:var(--deep-blue);font-weight:700}
+        .admin-main{flex:1;padding:40px;overflow-y:auto}.admin-tab-content{display:none;background:var(--white);padding:30px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.05);border:1px solid var(--border-light)}.admin-tab-content.active-admin-tab{display:block}.admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;border-bottom:1px solid var(--border-light);padding-bottom:15px}.admin-header h2{margin:0;font-size:1.5rem;color:var(--text-dark);letter-spacing:1px}
+        .admin-table{width:100%;border-collapse:collapse;margin-top:10px;background:var(--white);overflow:hidden}.admin-table th,.admin-table td{padding:15px;text-align:left;border-bottom:1px solid var(--border-light);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}.admin-table th{background:var(--light-bg);color:var(--gray);text-transform:uppercase;font-size:.8rem;letter-spacing:.5px;font-weight:700;border-bottom:2px solid var(--border-light)}.admin-table td{font-size:.9rem;color:var(--text-dark);vertical-align:middle}.admin-table img{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--border-light)}
+        .btn-sm{padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:.8rem;margin-right:5px;font-family:sans-serif;transition:all .2s;font-weight:600}.btn-sm:hover{transform:translateY(-1px)}.btn-edit{background:#e1f0ff;color:#2979ff}.btn-edit:hover{background:#2979ff;color:#fff}.btn-delete{background:#ffecec;color:#ff4d4d}.btn-delete:hover{background:#ff4d4d;color:#fff}
+        .admin-form-group{margin-bottom:20px}.admin-form-group label{display:block;margin-bottom:8px;font-weight:600;color:var(--text-dark);font-size:.9rem;font-family:sans-serif;text-transform:uppercase;letter-spacing:.5px}.admin-form-group input,.admin-form-group textarea,.admin-form-group select{width:100%;padding:12px;border:1px solid var(--border-light);border-radius:8px;font-family:inherit;font-size:.95rem;transition:border-color .2s;background:var(--light-bg)}.admin-form-group input:focus,.admin-form-group textarea:focus{border-color:var(--deep-blue);outline:none;background:var(--white);box-shadow:0 0 0 3px rgba(13,59,102,.1)}.admin-form-group textarea{height:120px;resize:vertical}
+        .btn-submit{background:var(--deep-blue);color:#fff;padding:12px 24px;border:none;border-radius:8px;font-size:.95rem;cursor:pointer;transition:all var(--transition-fast);font-weight:600;letter-spacing:.5px}.btn-submit:hover{background:var(--deep-blue-dark);transform:translateY(-2px);box-shadow:0 4px 12px rgba(13,59,102,.2)}
 
-        /* --- MAIN CONTENT STYLES --- */
-        header {
-            background-color: var(--deep-blue); color: var(--radiant-gold);
-            text-align: center; padding: 60px 15px; border-bottom: 5px solid var(--radiant-gold);
-        }
-        h1 { font-family: 'Bubblegum Sans', cursive; font-size: clamp(2.2rem, 8vw, 4rem); margin-bottom: 10px; letter-spacing: 2px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); line-height: 1.1; }
-        section { padding: 40px 0; border-bottom: 1px solid #e0e0e0; }
-        section:last-child { border-bottom: none; }
-        h2 { font-family: 'Bubblegum Sans', cursive; color: var(--deep-blue); font-size: clamp(1.8rem, 6vw, 2.5rem); margin-bottom: 20px; text-align: center; }
-        h3 { font-family: 'Bubblegum Sans', cursive; color: var(--deep-blue); font-size: clamp(1.4rem, 4vw, 1.8rem); margin-bottom: 10px; }
-        h4 { font-family: 'Bubblegum Sans', cursive; color: var(--deep-blue); font-size: 1.2rem; margin-bottom: 8px; }
-        p { font-size: 1.1rem; margin-bottom: 15px; text-align: justify; }
-        .scripture-ref { font-style: italic; color: #555; font-size: 0.95rem; }
-        .highlight-text { font-size: 1.2rem; font-weight: bold; color: var(--deep-blue); text-align: center; margin: 30px 0; padding: 0 10px; }
+        /* Home Hero */
+        .home-hero{position:relative;height:auto;min-height:400px;padding:80px 20px;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;overflow:hidden;background:radial-gradient(circle at 50% 40%,#1a4f82 0%,var(--deep-blue-darker) 70%)}
+        .home-hero::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background-image:url('https://z-cdn-media.chatglm.cn/files/d9ccee50-884e-40f7-be98-c652943944e4.png?auth_key=1881042643-96440635ddeb4b8d8fda02d7b5c2e5fe-0-8aee26085afd3bacea911d7bb51813e5');background-size:cover;background-position:center;opacity:.2;z-index:0}
+        .home-hero-content{position:relative;z-index:2;max-width:900px;padding:0 20px}.home-hero h1{font-size:clamp(3.5rem,9vw,7rem);letter-spacing:2px;text-shadow:0 10px 30px rgba(0,0,0,.3);margin-bottom:20px;line-height:1}
+        .home-hero-motto{font-family:'Bubblegum Sans',cursive;font-size:clamp(1rem,2.5vw,1.4rem);color:#fff;letter-spacing:3px;text-transform:uppercase;margin-bottom:40px;opacity:.9}
+        .hero-cta-btn{display:inline-block;background:var(--radiant-gold);color:var(--deep-blue-dark);font-size:1.2rem;padding:14px 45px;border-radius:50px;text-decoration:none;box-shadow:0 5px 20px rgba(255,202,40,.3);transition:all var(--transition-fast);cursor:pointer;border:none}.hero-cta-btn:hover{background:#fff;color:var(--deep-blue);transform:translateY(-3px);box-shadow:0 8px 25px rgba(0,0,0,.2)}
+        .home-section{padding:25px 20px}.home-section:nth-child(even){background:var(--white)}.home-section:nth-child(odd){background:var(--light-bg)}.home-section-inner{max-width:1100px;margin:0 auto}.home-section-title{font-size:clamp(2.2rem,5vw,3rem);text-align:center;margin-bottom:10px}
+        .profile-box{background:var(--white);padding:40px;border-radius:16px;box-shadow:var(--shadow-medium);border-left:6px solid var(--radiant-gold);position:relative;overflow:hidden}.profile-box::before{content:'\201C';position:absolute;top:-20px;right:20px;font-size:15rem;color:rgba(13,59,102,.03);font-family:Georgia,serif;line-height:1;pointer-events:none}.profile-box p{font-size:1.1rem;line-height:1.7;color:var(--text-dark);margin-bottom:15px}
+        .vm-grid{display:grid;grid-template-columns:1fr;gap:30px}.home-vision-block,.home-mission-block{color:#fff;padding:40px 35px;border-radius:16px;text-align:left;position:relative;overflow:hidden;transition:transform var(--transition-fast),box-shadow var(--transition-fast)}.home-vision-block:hover,.home-mission-block:hover{transform:translateY(-5px);box-shadow:0 15px 40px rgba(13,59,102,.3)}.home-vision-block::before,.home-mission-block::before{content:'';position:absolute;top:0;left:0;width:6px;height:100%;background:var(--radiant-gold)}.home-vision-block{background:linear-gradient(135deg,var(--deep-blue) 0%,#1a4f82 100%)}.home-mission-block{background:linear-gradient(135deg,#1a4f82 0%,var(--deep-blue-dark) 100%)}.home-vision-block p,.home-mission-block p{color:#e2e8f0;font-size:1.1rem;line-height:1.8;margin:0;position:relative;z-index:1}.home-vision-label,.home-mission-label{font-family:'Bubblegum Sans',cursive;color:var(--radiant-gold);font-size:1.8rem;margin-bottom:20px;display:block}
+        .pillars-home-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;justify-content:center}.pillar-home-card{position:relative;background:var(--white);padding:30px;border-radius:16px;box-shadow:var(--shadow-soft);border-left:5px solid var(--radiant-gold);transition:all var(--transition-fast);overflow:hidden;text-align:center}.pillar-home-card::before{content:attr(data-num);position:absolute;top:-10px;right:10px;font-family:'Bubblegum Sans',cursive;font-size:6rem;color:rgba(13,59,102,.03);line-height:1;pointer-events:none}.pillar-home-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-medium);border-left-color:var(--deep-blue);background-color:#f0f4f8}.pillar-home-title{font-size:1.6rem;color:var(--deep-blue);margin-bottom:0}
+        .values-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:15px;justify-content:center}.value-item{background:var(--white);padding:20px 25px;border-radius:12px;box-shadow:var(--shadow-soft);border-left:4px solid var(--radiant-gold);transition:all var(--transition-fast);display:flex;align-items:center;gap:20px}.value-item:hover{transform:translateX(5px);box-shadow:var(--shadow-medium);border-left-color:var(--deep-blue);background-color:#f0f4f8}.value-icon{width:45px;height:45px;background:var(--light-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--deep-blue);flex-shrink:0;transition:all var(--transition-fast)}.value-item:hover .value-icon{background:var(--deep-blue);color:var(--radiant-gold)}.value-text h3{font-size:1.2rem;margin-bottom:3px;color:var(--deep-blue)}.value-text p{margin:0;font-size:.9rem;color:var(--gray)}
+        .founder-home-card{background:var(--white);padding:40px 35px;border-radius:16px;box-shadow:var(--shadow-medium);max-width:700px;margin:20px auto 0;text-align:center;border-top:5px solid var(--radiant-gold)}.founder-highlight{font-size:1.2rem;color:var(--deep-blue);margin-top:20px;margin-bottom:0}
+        .anim-fade-up{opacity:0;transform:translateY(30px);transition:opacity .8s ease-out,transform .8s ease-out}.anim-fade-up.is-visible{opacity:1;transform:translateY(0)}
 
-        .name-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
-        .name-card { background: var(--white); padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 4px solid var(--radiant-gold); }
-        
-        .vm-container { background-color: var(--deep-blue); color: var(--white); padding: 30px 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
-        .vm-container h2 { color: var(--radiant-gold); }
-        .vm-container h3 { color: var(--radiant-gold); margin-top: 30px; }
-        .vm-container p { color: #e0e0e0; text-align: center; }
+        /* Footer */
+        footer{background:var(--deep-blue-darker);color:#fff;padding:60px 20px 30px;text-align:center;position:relative}.footer-content{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:25px}.footer-info{display:flex;flex-direction:column;align-items:center;gap:15px}.footer-title{font-size:1.8rem}.contact-row{display:flex;flex-wrap:wrap;gap:15px;justify-content:center}.contact-item{display:inline-flex;align-items:center;gap:10px;color:#e0e0e0;text-decoration:none;font-size:.9rem;background:rgba(255,255,255,.05);padding:10px 20px;border-radius:8px;border:1px solid rgba(255,255,255,.1);transition:all .3s ease}.contact-item:hover{color:var(--radiant-gold);background:rgba(255,255,255,.1);transform:translateY(-3px)}.contact-icon{width:16px;height:16px;fill:currentColor}
+        .social-row{display:flex;justify-content:center;gap:15px;margin-bottom:10px}.social-link{color:#e0e0e0;text-decoration:none;transition:color .2s,transform .2s;display:flex}.social-link:hover{color:var(--radiant-gold);transform:translateY(-2px)}.social-link svg{width:24px;height:24px;fill:currentColor}
+        .dev-credit{display:flex;align-items:center;justify-content:center}.dev-btn{display:inline-block;background:0 0;color:var(--radiant-gold);padding:12px 24px;border:1px solid var(--radiant-gold);border-radius:8px;text-decoration:none;font-size:1rem;transition:all .3s ease}.dev-btn:hover{background-color:var(--radiant-gold);color:var(--deep-blue-dark);transform:translateY(-3px)}.footer-divider{height:1px;width:100%;background:rgba(255,255,255,.1)}.footer-copyright{font-size:.85rem;color:rgba(255,255,255,.4);display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap}
 
-        .pillars-grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 30px; }
-        .pillar-card { background: var(--white); padding: 25px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); border-left: 5px solid var(--deep-blue); }
-        .pillar-card h3 { font-size: 1.4rem; display: flex; align-items: center; }
-        .pillar-card h3 span { color: var(--radiant-gold); margin-right: 10px; font-size: 1.6rem; }
-
-        .core-message { background: linear-gradient(135deg, var(--deep-blue) 0%, #1a4f82 100%); color: var(--white); padding: 30px 20px; border-radius: 12px; text-align: center; }
-        .core-message h2 { color: var(--radiant-gold); }
-        .core-message p { color: #e0e0e0; text-align: center; max-width: 800px; margin: 0 auto 15px auto; }
-
-        .leadership-section { text-align: center; }
-        .leader-name { font-family: 'Bubblegum Sans', cursive; font-size: clamp(1.6rem, 5vw, 2.2rem); color: var(--deep-blue); margin-bottom: 15px; }
-
-        .founder-img-container {
-            width: 180px; height: 180px; margin: 0 auto 25px; position: relative;
-            border-radius: 50%; border: 4px solid var(--radiant-gold);
-            box-shadow: 0 8px 20px rgba(13, 59, 102, 0.2); overflow: hidden;
-        }
-        .founder-img { width: 100%; height: 100%; object-fit: cover; }
-
-        .back-btn {
-            display: inline-flex; align-items: center; gap: 8px;
-            background-color: var(--deep-blue); color: var(--radiant-gold);
-            font-family: 'Bubblegum Sans', cursive; padding: 10px 20px;
-            border-radius: 8px; text-decoration: none; font-size: 1rem;
-            margin-bottom: 30px; border: none; cursor: pointer;
-        }
-        .back-btn:hover { background-color: var(--radiant-gold); color: var(--deep-blue-dark); }
-
-        /* --- GOSPEL VIEW TABS --- */
-        .gospel-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
-        .gospel-tab {
-            padding: 10px 20px; background: var(--white); border: 2px solid var(--deep-blue);
-            border-radius: 30px; font-family: 'Bubblegum Sans', cursive; color: var(--deep-blue);
-            cursor: pointer; transition: all 0.2s;
-        }
-        .gospel-tab.active-tab { background: var(--deep-blue); color: var(--radiant-gold); }
-        .gospel-sub-view { display: none; }
-        .gospel-sub-view.active-sub-view { display: block; }
-
-        /* --- FEED STYLES (Social Media) --- */
-        .feed-container { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
-        .post-card {
-            background: var(--white); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            overflow: hidden; transition: transform 0.2s;
-        }
-        .post-card:hover { transform: translateY(-3px); }
-        .post-header { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
-        .post-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--deep-blue); color: var(--radiant-gold); display: flex; justify-content: center; align-items: center; font-family: 'Bubblegum Sans', cursive; margin-right: 10px; }
-        .post-user-info { font-family: 'Bubblegum Sans', cursive; color: var(--deep-blue); }
-        .post-date { font-size: 0.8rem; color: #777; font-family: sans-serif; }
-        .post-body { padding: 20px; font-size: 1.1rem; line-height: 1.6; }
-        .post-body p { text-align: left; margin-bottom: 10px; }
-        .post-scripture { color: var(--deep-blue); font-weight: bold; font-style: italic; }
-        .post-actions { display: flex; justify-content: space-around; padding: 10px; border-top: 1px solid #eee; background: #fafafa; }
-        .action-btn {
-            background: none; border: none; cursor: pointer; color: #555;
-            display: flex; align-items: center; gap: 5px; font-family: 'Bubblegum Sans', cursive; font-size: 0.9rem; transition: color 0.2s;
-        }
-        .action-btn:hover { color: var(--deep-blue); }
-        .action-btn.liked { color: #e74c3c; }
-        .action-btn.saved { color: var(--radiant-gold); }
-
-        /* --- ADMIN PORTAL STYLES --- */
-        .admin-container { display: flex; min-height: 80vh; font-family: sans-serif; }
-        .admin-sidebar { width: 250px; background: var(--deep-blue-dark); color: var(--white); padding: 20px; }
-        .admin-sidebar h3 { color: var(--radiant-gold); margin-bottom: 20px; text-align: center; }
-        .admin-nav-item { display: block; padding: 10px; color: #ddd; text-decoration: none; margin-bottom: 5px; border-radius: 5px; cursor: pointer; }
-        .admin-nav-item:hover, .admin-nav-item.active-admin { background: var(--deep-blue); color: var(--radiant-gold); }
-        .admin-main { flex: 1; padding: 30px; background: var(--light-bg); }
-        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .admin-card { background: var(--white); padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .admin-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .admin-table th, .admin-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        .admin-table th { background: var(--deep-blue); color: var(--radiant-gold); font-family: 'Bubblegum Sans', cursive; }
-        .btn-sm { padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem; margin-right: 5px; }
-        .btn-edit { background: #3498db; color: white; }
-        .btn-delete { background: #e74c3c; color: white; }
-        .admin-form-group { margin-bottom: 15px; }
-        .admin-form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: var(--deep-blue); }
-        .admin-form-group input, .admin-form-group textarea, .admin-form-group select {
-            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-family: inherit;
-        }
-        .admin-form-group textarea { height: 120px; resize: vertical; }
-        .btn-submit { background: var(--deep-blue); color: var(--radiant-gold); padding: 10px 20px; border: none; border-radius: 5px; font-family: 'Bubblegum Sans', cursive; font-size: 1.1rem; cursor: pointer; }
-        .admin-sub-view { display: none; }
-        .admin-sub-view.active-admin-sub { display: block; }
-
-        /* --- FOOTER --- */
-        footer { background-color: var(--deep-blue-dark); color: var(--white); padding: 50px 20px 30px 20px; text-align: center; }
-        .footer-content { max-width: 1000px; margin: 0 auto; }
-        .footer-main-row { display: flex; flex-direction: column; gap: 30px; margin-bottom: 40px; align-items: center; }
-        .footer-info { width: 100%; display: flex; flex-direction: column; align-items: center; }
-        .footer-title { font-family: 'Bubblegum Sans', cursive; color: var(--radiant-gold); font-size: 1.8rem; margin-bottom: 15px; }
-        .contact-row { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
-        .contact-item { display: inline-flex; align-items: center; gap: 10px; color: #e0e0e0; text-decoration: none; font-size: 1rem; background: rgba(255,255,255,0.05); padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease; }
-        .contact-item:hover { color: var(--radiant-gold); background: rgba(255,255,255,0.1); transform: translateY(-3px); }
-        .contact-icon { width: 18px; height: 18px; fill: currentColor; }
-        .dev-credit { display: flex; align-items: center; justify-content: center; }
-        .dev-btn { display: inline-block; background-color: transparent; color: var(--radiant-gold); font-family: 'Bubblegum Sans', cursive; padding: 12px 24px; border: 2px solid var(--radiant-gold); border-radius: 8px; text-decoration: none; font-size: 1rem; letter-spacing: 0.5px; transition: all 0.3s ease; }
-        .dev-btn:hover { background-color: var(--radiant-gold); color: var(--deep-blue-dark); transform: translateY(-3px); box-shadow: 0 6px 20px rgba(255, 202, 40, 0.3); }
-        .footer-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 20px 0; }
-        .footer-copyright { font-size: 0.9rem; color: rgba(255,255,255,0.4); }
-        .admin-footer-link { color: rgba(255,255,255,0.2); font-size: 0.8rem; cursor: pointer; text-decoration: underline; }
-
-        /* --- RESPONSIVE --- */ 
-        @media (max-width: 767px) {
-            body { padding-bottom: var(--bottom-nav-height); }
-            footer { padding-bottom: calc(var(--bottom-nav-height) + 20px); }
-            .founder-img-container { width: 150px; height: 150px; }
-            .admin-container { flex-direction: column; }
-            .admin-sidebar { width: 100%; padding: 15px; }
-            .admin-nav-item { display: inline-block; margin-right: 5px; }
-        }
-
-        @media (min-width: 768px) {
-            .bottom-nav { display: none; }
-            .desktop-nav { display: flex; }
-            body { padding-bottom: 0; }
-            .name-grid { grid-template-columns: 1fr 1fr 1fr; }
-            .pillars-grid { grid-template-columns: 1fr 1fr; }
-            .app-titlebar { height: 80px; padding: 0 50px; }
-            .titlebar-title { font-size: 1.8rem; }
-            .desktop-nav { gap: 30px; }
-            .desktop-nav a { font-size: 1.2rem; }
-            .right-controls { gap: 30px; }
-            .window-controls { gap: 12px; }
-            .ctrl-btn { width: 16px; height: 16px; }
-            .footer-main-row { flex-direction: row; justify-content: space-between; align-items: flex-end; text-align: left; }
-            .footer-info { width: auto; align-items: flex-start; }
-            .contact-row { justify-content: flex-start; gap: 20px; }
-            .dev-credit { justify-content: flex-end; }
-        }
+        @media(max-width:767px){body{padding-bottom:var(--bottom-nav-height);padding-top:80px}footer{padding-bottom:calc(var(--bottom-nav-height) + 20px)}.founder-img-container{width:150px;height:150px}.admin-portal{flex-direction:column}.admin-sidebar{width:100%;padding:10px;flex-direction:row;overflow-x:auto;border-right:none;border-bottom:1px solid var(--border-light)}.admin-sidebar-logo{display:none}.admin-nav-link{padding:10px 15px;border-left:none;border-bottom:3px solid transparent;white-space:nowrap;border-radius:20px;margin-right:0}.admin-nav-link.active-admin{border-bottom-color:var(--deep-blue);border-left:none;background:var(--light-bg)}.admin-main{padding:15px}.titlebar-text{display:none}}
+        @media(min-width:768px){.bottom-nav{display:none}.desktop-nav{display:flex}body{padding-bottom:0}.app-titlebar{height:90px;padding:0 50px}.titlebar-logo{height:85px}.titlebar-text{display:block;font-size:2.4rem}.desktop-nav{gap:30px}.right-controls{gap:30px}.window-controls{gap:12px}.ctrl-btn{width:16px;height:16px}.vm-grid{grid-template-columns:1fr 1fr}}
     </style>
 </head>
 <body>
+    <div class="app-titlebar"><div class="titlebar-brand" onclick="showView('home-view')"><img src="TGS.PNG" alt="TGS" class="titlebar-logo"><span class="titlebar-text">The Glory Stream</span></div><div class="right-controls"><div class="desktop-nav"><a onclick="showView('beliefs-view')">Statement of Faith</a><a onclick="showView('gospel-view')">The Gospel</a><div class="dropdown"><a class="dropbtn">Departments</a><div class="dropdown-content"><a onclick="showView('band-view')">The Altar-Sound</a><a onclick="showView('cedars-view')">Cedars of Lebanon</a><a onclick="showView('media-view')">Media</a></div></div><a onclick="showView('join-view')">Join</a></div><div class="window-controls"><div class="ctrl-btn minimize" onclick="minimizeWindow()"></div><div class="ctrl-btn maximize" onclick="maximizeWindow()"></div><div class="ctrl-btn close" onclick="closeWindow()"></div><div class="ctrl-btn admin" onclick="showView('admin-view')" title="Admin Portal"></div></div></div></div>
 
-    <!-- TOP HEADER BAR -->
-    <div class="app-titlebar">
-        <a class="titlebar-title" onclick="showView('home-view')">THE GLORY STREAM</a>
-        <div class="right-controls">
-            <div class="desktop-nav">
-                <div class="dropdown">
-                    <a class="dropbtn">Home</a>
-                    <div class="dropdown-content">
-                        <a onclick="goToHomeSection('mandate')">Mandate</a>
-                        <a onclick="goToHomeSection('name')">The Name</a>
-                        <a onclick="goToHomeSection('vision-mission')">Vision & Mission</a>
-                        <a onclick="goToHomeSection('pillars')">Pillars</a>
-                        <a onclick="goToHomeSection('home-leadership')">Leadership</a>
-                    </div>
+    <nav class="bottom-nav"><a class="nav-item active" id="nav-home" onclick="showView('home-view')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg><span class="nav-label">Home</span></a><a class="nav-item" id="nav-gospel" onclick="showView('gospel-view')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg><span class="nav-label">Gospel</span></a><a class="nav-item" id="nav-dept" onclick="openSectionsMenu()"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg><span class="nav-label">Sections</span></a><a class="nav-item" id="nav-join" onclick="showView('join-view')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg><span class="nav-label">Join</span></a></nav>
+
+    <div class="mobile-sections-overlay" id="mobileSectionsMenu" onclick="closeSectionsMenu(event)"><div class="mobile-sections-panel"><h2 style="margin-bottom:20px">Sections</h2><div class="sections-grid"><div class="section-btn" onclick="showView('beliefs-view')">Statement of Faith</div><div class="section-btn" onclick="showView('band-view')">The Altar-Sound</div><div class="section-btn" onclick="showView('cedars-view')">Cedars of Lebanon</div><div class="section-btn" onclick="showView('media-view')">Media</div></div></div></div>
+    <div class="shutdown-overlay" id="shutdownScreen"><h2>Until Next Time!</h2><p style="font-size:1.1rem;color:#cbd5e1">Keep living the transformational worship lifestyle.</p></div>
+
+    <!-- HOME -->
+    <div id="home-view" class="view-container active-view"><div class="home-hero"><div class="home-hero-content"><h1>THE GLORY STREAM</h1><p class="home-hero-motto">Rooted in Christ. Empowered by the Spirit. Revealing His Glory.</p><button class="hero-cta-btn" onclick="document.getElementById('profile-section').scrollIntoView({behavior:'smooth'})">About Us</button></div></div><div class="home-section" id="profile-section"><div class="home-section-inner"><h2 class="home-section-title anim-fade-up">About Us</h2><div class="profile-box anim-fade-up"><p>The Glory Stream exists from a conviction that the Christian life was never intended to be merely observed, discussed, or admired, but faithfully lived.</p><p>Throughout history, God has called His people to know Him deeply, walk in His truth, grow into the likeness of Christ, and reveal His glory in the world. Yet every generation faces the same challenge: the tendency to settle for outward religion while neglecting spiritual formation—activity without devotion, knowledge without transformation, and influence without Christlikeness.</p><p>We believe God’s answer has always been the same: a people rooted in His Word, dependent on His Spirit, devoted to worship, committed to discipleship, and faithful in their witness.</p><p>The Glory Stream is therefore committed to cultivating a life centered on Christ and shaped by the Gospel. Through biblical teaching, prayer, worship, discipleship, and authentic community, we seek to encourage believers to grow into spiritual maturity, walk faithfully with God, and reveal His glory in every sphere of life.</p><p style="margin-bottom:0">Our desire is not merely to lead others, but to live what we proclaim—pursuing lives continually transformed by the Gospel, established in truth, empowered by the Holy Spirit, and devoted to the glory of God.</p></div></div></div><div class="home-section"><div class="home-section-inner"><div class="vm-grid"><div class="home-vision-block anim-fade-up"><span class="home-vision-label">Vision</span><p>To live and lead Christ-centered, gospel-transformed lives—established in truth, empowered by the Holy Spirit, and committed to revealing the glory of God in every sphere of life.</p></div><div class="home-mission-block anim-fade-up"><span class="home-mission-label">Mission</span><p>To proclaim Christ through biblical teaching, intentional discipleship, authentic worship, prayer, and community—equipping believers for spiritual maturity, holistic transformation, Christlike living, and faithful kingdom influence in every sphere of life, for the glory of God.</p></div></div></div></div><div class="home-section"><div class="home-section-inner"><h2 class="home-section-title anim-fade-up">Core Pillars</h2><div class="pillars-home-grid"><div class="pillar-home-card anim-fade-up" data-num="01"><h3 class="pillar-home-title">The Gospel</h3></div><div class="pillar-home-card anim-fade-up" data-num="02"><h3 class="pillar-home-title">The Scriptures</h3></div><div class="pillar-home-card anim-fade-up" data-num="03"><h3 class="pillar-home-title">Prayer</h3></div><div class="pillar-home-card anim-fade-up" data-num="04"><h3 class="pillar-home-title">Discipleship</h3></div><div class="pillar-home-card anim-fade-up" data-num="05"><h3 class="pillar-home-title">Community</h3></div><div class="pillar-home-card anim-fade-up" data-num="06"><h3 class="pillar-home-title">Fellowship</h3></div></div></div></div><div class="home-section"><div class="home-section-inner"><h2 class="home-section-title anim-fade-up">Core Values</h2><div class="values-grid"><div class="value-item anim-fade-up"><div class="value-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></div><div class="value-text"><h3>Christ-centeredness</h3></div></div><div class="value-item anim-fade-up"><div class="value-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div><div class="value-text"><h3>Integrity</h3></div></div><div class="value-item anim-fade-up"><div class="value-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div><div class="value-text"><h3>Excellence</h3></div></div><div class="value-item anim-fade-up"><div class="value-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M16 8l-4 4-4-4"></path><path d="M12 12v6"></path></svg></div><div class="value-text"><h3>Purpose</h3></div></div><div class="value-item anim-fade-up"><div class="value-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div><div class="value-text"><h3>Love</h3></div></div></div></div></div><div class="home-section"><div class="home-section-inner"><h2 class="home-section-title anim-fade-up">Leadership</h2><div class="founder-home-card anim-fade-up"><div class="founder-img-container"><img src="phil.jpg" alt="PHILPEACE" class="founder-img"></div><div class="leader-name">Founder & Lead Convener: PHILPEACE</div><p style="color:var(--text-dark);font-size:1.1rem;margin-bottom:15px">PHILPEACE is a visionary, worshipper, and carrier of the Gospel, called to lead this generation into a deeper relationship with God.</p><p class="founder-highlight">Under the leadership of PHILPEACE, this movement is issuing a call to the nations: Come out of spiritual complacency, worship God truly and Live transformed.</p></div></div></div></div>
+
+    <!-- GOSPEL -->
+    <div id="gospel-view" class="view-container"><header style="background:var(--deep-blue-dark)"><h1 style="color:var(--radiant-gold)">THE GOSPEL</h1></header><div class="container"><button class="back-btn" onclick="showView('home-view')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg> Back to Home</button><div class="gospel-tabs"><button class="gospel-tab active-tab" onclick="showGospelSub(this,'gospel-message')">The Message</button><button class="gospel-tab" onclick="showGospelSub(this,'gospel-daily')">Daily Series</button></div><div id="gospel-message" class="gospel-sub-view active-sub-view"><div class="vm-container" style="margin-top:0"><h2 style="color:var(--radiant-gold);margin-top:0">The Gospel At Its Roots</h2><p>The word "Gospel" comes from the Greek word <em>euangelion</em>, meaning "good news." It is the heart of the Christian faith—God's majestic rescue plan to redeem fallen humanity through His Son, Jesus Christ. It is the proclamation that God has acted decisively in history to reconcile sinners to Himself, not by our merit, but by His sheer grace.</p><p>The Gospel tells us that humanity, created for fellowship with God, rebelled and fell into spiritual death. But God, rich in mercy, sent His only Son to live the life we could not live and die the death we deserved. On the cross, Jesus bore the full weight of God's wrath against sin, and on the third day, He rose again, conquering death and hell. This is the good news that saves and transforms.</p></div><h2 style="color:var(--deep-blue);margin-top:30px">Responding to the Gospel</h2><div class="grid-2" style="margin-top:20px;margin-bottom:40px"><div class="card pillar"><h3>1. Acknowledge Your Need</h3><p>Recognize that all have sinned and fall short of God's glory (Romans 3:23). Admit your spiritual brokenness and inability to save yourself.</p></div><div class="card pillar"><h3>2. Believe in Christ</h3><p>Trust that Jesus Christ is the Son of God, that He died for your sins, and that He rose again to give you eternal life (Romans 10:9).</p></div><div class="card pillar"><h3>3. Confess and Repent</h3><p>Turn from your old ways of sin and self-reliance. Surrender your life entirely to Jesus, confessing Him as Lord and Master.</p></div><div class="card pillar"><h3>4. Be Born Again</h3><p>Receive the Holy Spirit and step into a new life as a child of God. Old things pass away; behold, all things become new (John 3:3).</p></div></div><h2 style="color:var(--deep-blue)">A Lifelong Commitment to the Kingdom</h2><div class="grid-2" style="margin-top:20px"><div class="card pillar"><h3>5. Commit to the Kingdom</h3><p>Live out the reality of God's rule in every sphere of your life. Seek first His Kingdom and His righteousness, manifesting righteousness, peace, and joy in the Holy Spirit.</p></div><div class="card pillar"><h3>6. Walk in Obedience</h3><p>A lifelong commitment to God's Word and spiritual disciplines. Obedience is the proving ground of genuine faith and the path to Christlike character.</p></div><div class="card pillar"><h3>7. Serve in Community</h3><p>Use your spiritual gifts to build up the Church and advance God's mission on earth. We are called out of isolation into the family of God.</p></div><div class="card pillar"><h3>8. Endure in Hope</h3><p>Fix your eyes on the eternal glory to come. Remain steadfast and faithful through trials, knowing that He who began a good work in you will carry it on to completion.</p></div></div></div><div id="gospel-daily" class="gospel-sub-view"><h2 style="text-align:center">Daily Encouragement Series</h2><div class="feed-container" id="daily-feed-container"></div></div></div></div>
+
+    <!-- BELIEFS -->
+    <div id="beliefs-view" class="view-container"><header><h1>Statement of Faith</h1></header><div class="container"><button class="back-btn" onclick="showView('home-view')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg> Back to Home</button><div class="grid-2"><div class="card pillar"><h3>1. The Holy Scriptures</h3><p>The Bible is the inspired, infallible, and authoritative Word of God. It is the final rule for faith, doctrine, and life.</p></div><div class="card pillar"><h3>2. The One True God</h3><p>There is one eternal God (Deuteronomy 6:4). He exists in three persons: Father, Son, and Holy Spirit. The Trinity is co-equal, co-eternal, and consubstantial.</p></div><div class="card pillar"><h3>3. Jesus Christ</h3><p>Fully God and fully man. Conceived by the Holy Spirit, born of the virgin Mary. Lived a sinless and obedient life. Died as the atoning sacrifice for sin. Bodily resurrected on the third day. Will return personally, visibly, and gloriously.</p></div><div class="card pillar"><h3>4. The Holy Spirit</h3><p>The Holy Spirit is fully God and personally active in the Church. He regenerates, indwells, and seals believers. He empowers holy living, worship, and witness.</p></div><div class="card pillar"><h3>5. Salvation</h3><p>Salvation is by grace alone through faith alone in Christ alone. It is not earned by works but received as a gift of God.</p></div><div class="card pillar"><h3>6. Eternal Life</h3><p>Eternal life is the present possession of all who believe in Christ. It begins at salvation and continues beyond physical death.</p></div><div class="card pillar"><h3>7. The Kingdom of God</h3><p>The Kingdom of God is God’s sovereign rule through Christ. It is both present (already) and future (not yet). The Kingdom will be fully revealed at Christ’s return.</p></div><div class="card pillar"><h3>8. The Church</h3><p>The Church is the body of Christ, composed of all true believers. Christ is the head of the Church. The Church is sent to make disciples of all nations.</p></div><div class="card pillar"><h3>9. Christian Life</h3><p>Believers are called to holiness and obedience to God. Transformation is evidence of genuine faith.</p></div><div class="card pillar"><h3>10. The Ordinances</h3><p>Baptism – by immersion as a public declaration of faith in Christ. The Lord’s Supper – remembrance of Christ’s death until He returns.</p></div><div class="card pillar"><h3>11. The Last Things</h3><p>Jesus Christ will return personally and visibly. There will be a resurrection of the dead. Final judgment will occur under Christ’s authority.</p></div><div class="card pillar"><h3>12. The Glory of God</h3><p>All creation exists for the glory of God. The believer’s life is to reflect and reveal God’s glory. Worship, mission, and obedience flow from this ultimate purpose.</p></div></div></div></div>
+
+    <!-- BAND -->
+    <div id="band-view" class="view-container"><header><h1>The Altar-Sound</h1></header><div class="container"><button class="back-btn" onclick="showView('home-view')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg> Back to Home</button><div class="highlight" style="margin-top:0"><h2>THE ALTAR-SOUND</h2><p>Altarsound is profoundly rich with biblical meaning, reaching into the very heart of worship, sacrifice, and the relationship between God and His people.</p></div><div class="altar-tabs"><button class="altar-tab active-tab" onclick="showAltarSub(this,'altar-philosophy')">Philosophy of Music</button><button class="altar-tab" onclick="showAltarSub(this,'altar-members')">Band Members</button></div><div id="altar-philosophy" class="altar-sub-view active-sub-view"><h2 style="color:var(--deep-blue);margin-top:0">The Altar - The Foundation</h2><div class="grid-2" style="margin-bottom:30px"><div class="card pillar"><h3>1. Sacrifice & Atonement</h3><p>Our music is built upon Christ's ultimate sacrifice. We do not play to earn God's favor, but to respond to the favor already won at the altar of Calvary.</p></div><div class="card pillar"><h3>2. Consecration & Dedication</h3><p>We are living altars, set apart for God. Our collective talent, time, and very lives are laid down as an act of worship.</p></div></div><div class="card pillar" style="margin-bottom:40px"><h3>3. Meeting & Communion</h3><p>We desire our sound to facilitate a meeting between God and the audience. We are Levites tending the altar, preparing the offering in anticipation of God's holy presence descending like fire.</p></div><h2 style="color:var(--deep-blue)">The Sound - The Expression</h2><div class="grid-2" style="margin-bottom:40px"><div class="card pillar"><h3>1. Proclamation & Call to Worship</h3><p>Our music is a clarion call—a trumpet blast cutting through the noise of the world, calling people to assemble before God and declaring, "The King is here!"</p></div><div class="card pillar"><h3>2. Praise & Worship</h3><p>As descendants of the Levitical choirs, our goal is to create a sound so filled with authentic praise that it invites the glory of the Lord to fill the temple.</p></div></div><div class="card pillar" style="margin-bottom:40px"><h3>3. Intercession & Lament</h3><p>Our sound provides a language for the heartbroken. We lift the prayers, groans, and laments of the congregation as incense, carrying the honest cries of the people to the throne of grace.</p></div><div class="highlight" style="margin-top:0"><h2>Synthesis: Identity & Mission</h2><p><strong>Mission:</strong> To lead people to the spiritual altar—the foot of the cross—where they encounter God through Jesus.</p><p><strong>Method:</strong> A multifaceted instrument: A trumpet calling the lost, a harp offering beautiful praise, and incense lifting the people's prayers.</p><p><strong>Theology:</strong> Our stage is an altar, our instruments are sacred vessels, and our lives are the living sacrifice. Success is measured not by applause, but by the presence of God and the transformation of hearts.</p></div></div><div id="altar-members" class="altar-sub-view"><h3 style="margin-top:10px;text-align:center">Instrumentalists & Vocalists</h3><div id="band-container" class="cedar-grid" style="margin-top:20px"></div></div></div></div>
+
+    <!-- CEDARS -->
+    <div id="cedars-view" class="view-container"><header><h1>Cedars of Lebanon</h1></header><div class="container"><button class="back-btn" onclick="showView('home-view')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg> Back to Home</button><div class="highlight" style="margin-top:0"><h2>CEDARS OF LEBANON</h2><p>The leadership team, rooted deeply in Christ, standing tall in faith, and enduring through every season. "The righteous flourish like the palm tree and grow like a cedar in Lebanon." (Psalm 92:12)</p></div><div id="cedars-container" class="cedar-grid"></div></div></div>
+
+    <!-- MEDIA -->
+    <div id="media-view" class="view-container"><header><h1>Media Department</h1></header><div class="container"><button class="back-btn" onclick="showView('home-view')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg> Back to Home</button><div class="card pillar" style="margin-top:0"><h3>Media Ministry</h3><p>The Media Department exists to amplify the Gospel through excellent visual, audio, and digital communication. We believe that media is not merely a tool for display, but a stewardship—a means to honor God, edify the Church, and reach the nations with the truth of Christ.</p></div><div class="grid-2" style="margin-top:20px"><div class="card pillar"><h3>Our Conviction</h3><p>Excellence in media is an act of worship. Whether through sound engineering, video, photography, or design, we pursue quality that reflects the glory of God and serves the gathering with clarity and excellence.</p></div><div class="card pillar"><h3>Our Role</h3><p>Sound Engineering & Audio Mixing, Livestream & Video Production, Photography & Visual Arts, Social Media & Digital Outreach, Presentation & Lyric Display.</p></div></div><h3 style="margin-top:30px;text-align:center">Media Crew</h3><div id="media-container" class="cedar-grid" style="margin-top:20px"></div></div></div>
+
+    <!-- JOIN -->
+    <div id="join-view" class="view-container">
+        <header><h1>Join The Stream</h1></header>
+        <div class="join-wrapper">
+            <div class="cta-inner">
+                <h2>Become Part of the Community</h2>
+                <p>Want to be part of what God is doing? Follow these simple steps to join our WhatsApp community:</p>
+                <ol class="guidelines-list">
+                    <li>Scan the QR code below or tap the chat button.</li>
+                    <li>Send a message introducing yourself briefly.</li>
+                    <li>Mention how you found The Glory Stream.</li>
+                    <li>Wait for an admin to welcome you into the group!</li>
+                </ol>
+                <div class="qr-code-container">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Fwa.me%2F254702987550" onerror="this.src='QR.jpg'" alt="WhatsApp QR" class="qr-code-img">
+                    <p style="font-size:0.9rem;color:var(--deep-blue);margin-top:8px">Scan to join the group</p>
                 </div>
-                <a onclick="showView('band-view')">Band</a>
-                <a onclick="showView('gospel-view')">Gospel</a>
-            </div>
-            <div class="window-controls">
-                <div class="ctrl-btn minimize" onclick="minimizeWindow()"></div>
-                <div class="ctrl-btn maximize" onclick="maximizeWindow()"></div>
-                <div class="ctrl-btn close" onclick="closeWindow()"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MOBILE APP BOTTOM NAV -->
-    <nav class="bottom-nav">
-        <a class="nav-item active" id="nav-home" onclick="showView('home-view')">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-            <span class="nav-label">Home</span>
-        </a>
-        <a class="nav-item" id="nav-band" onclick="showView('band-view')">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
-            <span class="nav-label">Band</span>
-        </a>
-        <a class="nav-item" id="nav-gospel" onclick="showView('gospel-view')">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-            <span class="nav-label">Gospel</span>
-        </a>
-        <a class="nav-item" onclick="openSectionsMenu()">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
-            <span class="nav-label">Sections</span>
-        </a>
-    </nav>
-
-    <!-- Mobile Sections Menu -->
-    <div class="mobile-sections-overlay" id="mobileSectionsMenu" onclick="closeSectionsMenu(event)">
-        <div class="mobile-sections-panel">
-            <h2 style="margin-bottom: 20px; font-size: 1.5rem;">Jump to Section</h2>
-            <div class="sections-grid">
-                <div class="section-btn" onclick="goToHomeSection('mandate')">Mandate</div>
-                <div class="section-btn" onclick="goToHomeSection('name')">The Name</div>
-                <div class="section-btn" onclick="goToHomeSection('vision-mission')">Vision</div>
-                <div class="section-btn" onclick="goToHomeSection('pillars')">Pillars</div>
-                <div class="section-btn" onclick="goToHomeSection('home-leadership')">Leadership</div>
-                <div class="section-btn" onclick="showView('admin-view')">Admin</div>
+                <a href="https://wa.me/254702987550" target="_blank" class="cta-button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    Chat on WhatsApp
+                </a>
             </div>
         </div>
     </div>
 
-    <!-- SHUTDOWN OVERLAY -->
-    <div class="shutdown-overlay" id="shutdownScreen">
-        <h2>Until Next Time!</h2>
-        <p>Keep living the transformational worship lifestyle.</p>
-    </div>
+    <!-- ADMIN -->
+    <div id="admin-view" class="view-container"><div id="admin-login-full" class="admin-login-box"><h3>Admin Portal</h3><p style="font-size:.95rem;color:var(--gray);margin-bottom:25px;font-family:sans-serif">Enter your 4-digit security PIN to access the dashboard.</p><div class="pin-input-group"><input type="password" maxlength="1" class="pin-digit" id="pin-1" oninput="pinNext(this,'pin-2')" onfocus="this.select()"><input type="password" maxlength="1" class="pin-digit" id="pin-2" oninput="pinNext(this,'pin-3')" onfocus="this.select()"><input type="password" maxlength="1" class="pin-digit" id="pin-3" oninput="pinNext(this,'pin-4')" onfocus="this.select()"><input type="password" maxlength="1" class="pin-digit" id="pin-4" oninput="checkAdminPin()" onfocus="this.select()"></div><p class="pin-error" id="pin-error-msg">Incorrect PIN. Access Denied.</p><button class="btn-submit" style="width:100%" onclick="checkAdminPin()">Access Dashboard</button></div><div id="admin-portal-full" style="display:none" class="admin-portal"><div class="admin-sidebar"><div class="admin-sidebar-logo">Dashboard</div><a class="admin-nav-link active-admin" onclick="showAdminTab('daily',this)">Daily Series</a><a class="admin-nav-link" onclick="showAdminTab('leadership',this)">Cedars of Lebanon</a><a class="admin-nav-link" onclick="showAdminTab('band',this)">Altar-Sound Band</a><a class="admin-nav-link" onclick="showAdminTab('media',this)">Media Crew</a><div style="flex:1"></div><a class="admin-nav-link" style="border-top:1px solid var(--border-light);margin-top:20px;color:#e74c3c" onclick="lockAdmin()">Lock Portal</a></div><div class="admin-main"><div id="admin-daily-tab" class="admin-tab-content active-admin-tab"><div class="admin-header"><h2>Manage Daily Series</h2><button class="btn-submit" onclick="openPostModal('daily')">+ New Post</button></div><table class="admin-table"><thead><tr><th>Title</th><th>Scripture</th><th>Date</th><th>Actions</th></tr></thead><tbody id="admin-daily-table"></tbody></table></div><div id="admin-leadership-tab" class="admin-tab-content"><div class="admin-header"><h2>Manage Cedars of Lebanon</h2><button class="btn-submit" onclick="openMemberModal('leadership')">+ Add Leader</button></div><table class="admin-table"><thead><tr><th>Photo</th><th>Name</th><th>Role</th><th>Actions</th></tr></thead><tbody id="admin-leadership-table"></tbody></table></div><div id="admin-band-tab" class="admin-tab-content"><div class="admin-header"><h2>Manage Altar-Sound Band</h2><button class="btn-submit" onclick="openMemberModal('band')">+ Add Member</button></div><table class="admin-table"><thead><tr><th>Photo</th><th>Name</th><th>Role</th><th>Actions</th></tr></thead><tbody id="admin-band-table"></tbody></table></div><div id="admin-media-tab" class="admin-tab-content"><div class="admin-header"><h2>Manage Media Crew</h2><button class="btn-submit" onclick="openMemberModal('media')">+ Add Member</button></div><table class="admin-table"><thead><tr><th>Photo</th><th>Name</th><th>Role</th><th>Actions</th></tr></thead><tbody id="admin-media-table"></tbody></table></div></div></div></div>
 
-    <!-- ======================================================================= -->
-    <!-- VIEW 1: HOME -->
-    <!-- ======================================================================= -->
-    <div id="home-view" class="view-container active-view">
-        <header id="mandate">
-            <h1>THE GLORY STREAM CONVOCATION</h1>
-        </header>
-        <div class="container">
-            <section>
-                <h2>The Mandate</h2>
-                <p>Glory Stream Convocation is a conventional worship gathering where the true Gospel of Jesus Christ is preached, Spirit-filled praise and worship music is unleashed, and believers are immersed in the tangible presence of God to become agents of His kingdom in their world.</p>
-                <p>We are a movement and a sacred assembly. Born from a deep hunger for authentic worship and biblical truth, Glory Stream Convocation exists to bridge the gap between the reverence of the historic faith and the freedom of Spirit-led revival.</p>
-                <div class="highlight-text">Under the leadership of PHILPEACE, this movement is issuing a call to the nations: Come out of spiritual complacency, worship God truly and Live transformed.</div>
-            </section>
-
-            <section id="name">
-                <h2>The Name</h2>
-                <div class="name-grid">
-                    <div class="name-card"><h3>GLORY</h3><p>The manifest, tangible presence of God. It is the revelation of His character, His holiness, and His saving power, demonstrated fully through the life, death, and resurrection of Jesus Christ.</p></div>
-                    <div class="name-card"><h3>STREAM</h3><p>The continuous, ongoing work and filling of the Holy Spirit in the life of the believer. It represents the constant supply of God’s grace, power, and life that sustains us daily.</p></div>
-                    <div class="name-card"><h3>CONVOCATION</h3><p>A formal, sovereign calling together of God's people. We do not gather by accident; we are divinely summoned by the Spirit to assemble for worship, the preaching of the Word, and mutual edification.</p></div>
-                </div>
-            </section>
-
-            <section id="vision-mission">
-                <div class="vm-container">
-                    <h2>Our Vision</h2>
-                    <p><strong>To foster a transformational worship lifestyle, becoming a generation that carries the presence and power of God into every sphere of life.</strong></p>
-                    <p>The vision goes beyond the event. We want that encounter to reshape everyday lives. A transformational worship lifestyle means that worship is no longer just an activity, but our core identity.</p>
-                    <p class="scripture-ref" style="color: #ddd;">{Colossians 3:17, 23, Isaiah 43:7,21}</p>
-                    <h2 style="margin-top: 50px;">Our Mission</h2>
-                    <p><strong>To cultivate an holistic culture of worship that begins in private devotion and overflows into corporate celebration, convening Spirit-filled gatherings where the true Gospel is preached and the Holy Spirit brings life.</strong></p>
-                </div>
-            </section>
-
-            <section id="pillars">
-                <h2>Our Four Pillars</h2>
-                <div class="pillars-grid">
-                    <div class="pillar-card"><h3><span>01</span> The True Gospel – Our Anchor</h3><p>Jesus Christ is the foundation. We unashamedly preach Christ crucified, risen, and returning. Every song, every prayer, and every sermon points back to the cross.</p></div>
-                    <div class="pillar-card"><h3><span>02</span> Spirit-Filled Worship - Our Response</h3><p>We prioritize authentic, heartfelt praise and intimate worship, making room for the spontaneous leading of the Spirit, prophetic ministry, and spiritual gifts, all exercised biblically.</p></div>
-                    <div class="pillar-card"><h3><span>03</span> Biblical Conviction - The Foundation</h3><p>We are deeply rooted in the authority of Scripture. We do not chase emotional experiences; we submit our emotions and experiences to the Word of God.</p></div>
-                    <div class="pillar-card"><h3><span>04</span> Lifestyle Transformation - The Outcome</h3><p>A true encounter with the Holy Spirit always results in transformed character, bold witness, and active compassion. We are called to be salt and light.</p></div>
-                </div>
-            </section>
-
-            <section id="home-leadership" class="leadership-section">
-                <h2>The Leadership</h2>
-                <div style="background: var(--white); padding: 40px 25px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); max-width: 700px; margin: 0 auto; text-align: center;">
-                    <div class="founder-img-container"><img src="phil.jpg" alt="PHILPEACE" class="founder-img"></div>
-                    <div class="leader-name">Founder & Lead Convener: PHILPEACE</div>
-                    <p style="color: #222;">PHILPEACE is a visionary, worshipper, and carrier of the Gospel, called to lead this generation into a deeper relationship with God.</p>
-                </div>
-            </section>
-        </div>
-    </div>
-
-    <!-- ======================================================================= -->
-    <!-- VIEW 2: THE ALTAR SOUND BAND -->
-    <!-- ======================================================================= -->
-    <div id="band-view" class="view-container">
-        <header><h1>THE ALTAR SOUND BAND</h1></header>
-        <div class="container">
-            <button class="back-btn" onclick="showView('home-view')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg> Back to Home</button>
-            <section style="padding-top: 0;">
-                <p style="text-align: center; max-width: 700px; margin: 0 auto 40px; font-size: 1.2rem;">The leading force of our worship, comprising 15 anointed musicians and vocalists dedicated to creating an atmosphere where the Holy Spirit moves freely.</p>
-                <h2 style="margin-bottom: 30px;">Instrumentalists</h2>
-                <div class="name-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
-                    <div class="name-card"><h3>Justus Mwangi</h3><p style="font-style: italic; margin:0; color:#555;">JM Solo - Lead Guitarist</p></div>
-                    <div class="name-card"><h3>Seth Jatia</h3><p style="font-style: italic; margin:0; color:#555;">Jatia-Bass - Bassist</p></div>
-                    <div class="name-card"><h3>Meshack Melau</h3><p style="font-style: italic; margin:0; color:#555;">Pilau - Drums</p></div>
-                    <div class="name-card"><h3>Gerald Mwangi</h3><p style="font-style: italic; margin:0; color:#555;">G-Max - Keys</p></div>
-                    <div class="name-card"><h3>Samuel Barasa</h3><p style="font-style: italic; margin:0; color:#555;">Keys</p></div>
-                    <div class="name-card"><h3>Darius Barasa</h3><p style="font-style: italic; margin:0; color:#555;">King Darius - Keys</p></div>
-                </div>
-                <h2 style="margin-top: 50px; margin-bottom: 30px;">Vocalists</h2>
-                <div class="pillars-grid">
-                    <div class="pillar-card"><h3><span>S</span> Soprano</h3><p>Linet Nzisa<br>Brenda Hephy</p></div>
-                    <div class="pillar-card"><h3><span>A</span> Alto</h3><p>Esther Namsifu<br>Mary Nyaguthii<br>Ivy Wambungu<br>Eunice Mutuku</p></div>
-                    <div class="pillar-card"><h3><span>T</span> Tenor</h3><p>John Kimwele<br>Shadrack Baraka<br>Philip Muuo</p></div>
-                </div>
-            </section>
-        </div>
-    </div>
-
-    <!-- ======================================================================= -->
-    <!-- VIEW 3: THE GOSPEL (Main Hub) -->
-    <!-- ======================================================================= -->
-    <div id="gospel-view" class="view-container">
-        <header><h1>THE GOSPEL</h1></header>
-        <div class="container">
-            <button class="back-btn" onclick="showView('home-view')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg> Back to Home</button>
-            
-            <div class="gospel-tabs">
-                <button class="gospel-tab active-tab" onclick="showGospelSub('gospel-message')">The Gospel</button>
-                <button class="gospel-tab" onclick="showGospelSub('gospel-daily')">Daily Series</button>
-                <button class="gospel-tab" onclick="showGospelSub('gospel-discipleship')">Discipleship</button>
-                <button class="gospel-tab" onclick="showGospelSub('gospel-connect')">Connect</button>
-            </div>
-
-            <!-- Sub-view 1: The Message -->
-            <div id="gospel-message" class="gospel-sub-view active-sub-view">
-                <div class="vm-container">
-                    <h2 style="color:var(--radiant-gold); margin-top:0;">What is the Gospel?</h2>
-                    <p>The word “Gospel” comes from the Greek word <em>euangelion</em>, meaning “good news.” In Christian faith, the Gospel is the good news about the life, death, resurrection, and ascension of Jesus Christ for the salvation of mankind, and the hope for the second coming of Jesus Christ. It’s the heart of Christian belief — God’s rescue (redemption) plan to redeem fallen humanity through Jesus.</p>
-                </div>
-                
-                <div class="pillars-grid" style="margin-top:20px;">
-                    <div class="pillar-card"><h3><span>1</span> God’s Original Design</h3><p>God created the world good, perfect, and without sin. Humanity was made in God’s image (Genesis 1:26–27) to glorify, worship, and fellowship with Him. Truth: Life has purpose, and mankind was designed to live in harmony with God.</p></div>
-                    <div class="pillar-card"><h3><span>2</span> The Fall of Man</h3><p>Sin entered the world through Adam and Eve’s disobedience (Genesis 3). Sin separated humanity from God, bringing death, suffering, and spiritual separation (Romans 3:23, Romans 6:23). Truth: All people are born in sin and are incapable of saving themselves.</p></div>
-                    <div class="pillar-card"><h3><span>3</span> God’s Redemptive Plan</h3><p>God, in His love, promised a Savior (Genesis 3:15). Through Israel, prophets spoke of a coming Messiah who would bear sin and restore man’s relationship with God (Isaiah 53, Micah 5:2).</p></div>
-                    <div class="pillar-card"><h3><span>4</span> The Life of Jesus Christ</h3><p>Jesus was born of a virgin (Matthew 1:23), fully God and fully man (John 1:14). He lived a sinless life, taught truth, performed miracles, and revealed God’s character (Hebrews 4:15). Truth: Jesus is God’s perfect representative to man.</p></div>
-                    <div class="pillar-card"><h3><span>5</span> The Death of Jesus</h3><p>Jesus willingly died on the cross for the sins of humanity (1 Peter 2:24). His death satisfied God’s justice and demonstrated His love (Romans 5:8). Truth: Salvation was purchased by the blood of Christ alone.</p></div>
-                    <div class="pillar-card"><h3><span>6</span> The Resurrection</h3><p>On the third day, Jesus rose from the dead (Luke 24:6–7). His resurrection proves His victory over sin, death, and Satan (1 Corinthians 15:3–8). Truth: The resurrection gives believers hope of eternal life.</p></div>
-                    <div class="pillar-card"><h3><span>7</span> Ascension & Lordship</h3><p>Jesus ascended to heaven and is seated at the right hand of God (Acts 1:9–11, Ephesians 1:20–23). He reigns as Lord, intercedes for believers, and will return to judge the world (Philippians 2:9–11).</p></div>
-                    <div class="pillar-card"><h3><span>8</span> Salvation by Grace</h3><p>Salvation is a free gift, not earned by works (Ephesians 2:8–9). It’s received through repentance and faith in Jesus Christ alone (Romans 10:9–10). Truth: Anyone can be saved by trusting in Jesus as Lord and Savior.</p></div>
-                    <div class="pillar-card"><h3><span>9</span> New Life & Transformation</h3><p>Believers are made new, indwelt by the Holy Spirit (2 Corinthians 5:17, Galatians 5:22–23). They grow in holiness, community, and mission. Truth: The gospel transforms lives now and prepares us for eternity.</p></div>
-                    <div class="pillar-card"><h3><span>10</span> The Eternal Hope</h3><p>Believers have the hope of eternal life with God (John 14:1–3). Jesus will return, sin will be finally defeated, and creation will be restored (Revelation 21:1–5). Truth: The gospel secures a glorious eternal future.</p></div>
-                </div>
-            </div>
-
-            <!-- Sub-view 2: Daily Feed -->
-            <div id="gospel-daily" class="gospel-sub-view">
-                <h2 style="text-align:center;">Daily Encouragement Series</h2>
-                <div class="feed-container" id="daily-feed-container">
-                    <!-- Posts injected via JS -->
-                </div>
-            </div>
-
-            <!-- Sub-view 3: Discipleship Feed -->
-            <div id="gospel-discipleship" class="gospel-sub-view">
-                <h2 style="text-align:center;">Discipleship Series</h2>
-                <div class="feed-container" id="discipleship-feed-container">
-                    <!-- Posts injected via JS -->
-                </div>
-            </div>
-
-            <!-- Sub-view 4: Connect -->
-            <div id="gospel-connect" class="gospel-sub-view">
-                <h2 style="text-align:center;">One-on-One Engagement</h2>
-                <div class="vm-container" style="margin-top:20px;">
-                    <p>Ready to take the next step in your faith journey? Connect with us for personal discipleship, prayer, and mentorship.</p>
-                </div>
-                <div style="max-width: 600px; margin: 30px auto; background: var(--white); padding: 30px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.08);">
-                    <h3 style="text-align:center; margin-bottom:20px;">Contact Form</h3>
-                    <div class="admin-form-group"><input type="text" placeholder="Your Full Name"></div>
-                    <div class="admin-form-group"><input type="email" placeholder="Your Email"></div>
-                    <div class="admin-form-group"><textarea placeholder="How can we walk with you? / Prayer Request"></textarea></div>
-                    <button class="btn-submit" style="width:100%;">Submit Request</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ======================================================================= -->
-    <!-- VIEW 4: ADMIN PORTAL -->
-    <!-- ======================================================================= -->
-    <div id="admin-view" class="view-container">
-        <header><h1>ADMIN PORTAL</h1></header>
-        
-        <div class="admin-container">
-            <div class="admin-sidebar">
-                <h3>Dashboard</h3>
-                <a class="admin-nav-item active-admin" onclick="showAdminSub('admin-daily')">Daily Series</a>
-                <a class="admin-nav-item" onclick="showAdminSub('admin-discipleship')">Discipleship</a>
-                <a class="admin-nav-item" onclick="showAdminSub('admin-pages')">Pages Content</a>
-                <br><br>
-                <button class="back-btn" style="width:100%; justify-content:center;" onclick="showView('home-view')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg> Exit Admin</button>
-            </div>
-
-            <div class="admin-main">
-                <!-- Admin Sub 1: Daily -->
-                <div id="admin-daily" class="admin-sub-view active-admin-sub">
-                    <div class="admin-header">
-                        <h2>Manage Daily Series</h2>
-                        <button class="btn-submit" onclick="openPostModal('daily')">+ New Post</button>
-                    </div>
-                    <div class="admin-card">
-                        <table class="admin-table">
-                            <thead><tr><th>Title</th><th>Date</th><th>Actions</th></tr></thead>
-                            <tbody id="admin-daily-table"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Admin Sub 2: Discipleship -->
-                <div id="admin-discipleship" class="admin-sub-view">
-                    <div class="admin-header">
-                        <h2>Manage Discipleship Series</h2>
-                        <button class="btn-submit" onclick="openPostModal('discipleship')">+ New Post</button>
-                    </div>
-                    <div class="admin-card">
-                        <table class="admin-table">
-                            <thead><tr><th>Title</th><th>Date</th><th>Actions</th></tr></thead>
-                            <tbody id="admin-discipleship-table"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Admin Sub 3: Pages -->
-                <div id="admin-pages" class="admin-sub-view">
-                    <div class="admin-header"><h2>Manage Pages Content</h2></div>
-                    <div class="admin-card">
-                        <p>This section is reserved for future CRUD implementation for Home, Band, and Gospel static content.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Admin Modal for Creating/Editing Posts -->
-    <div id="postModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:4000; justify-content:center; align-items:center;">
-        <div style="background:var(--white); width:90%; max-width:600px; padding:30px; border-radius:12px; position:relative;">
-            <button onclick="closePostModal()" style="position:absolute; top:10px; right:15px; background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
-            <h2 id="modalTitle" style="margin-bottom:20px;">New Post</h2>
-            <input type="hidden" id="postIdField">
-            <input type="hidden" id="postTypeField">
-            <div class="admin-form-group"><label>Title / Theme</label><input type="text" id="postTitle"></div>
-            <div class="admin-form-group"><label>Scripture Reference</label><input type="text" id="postScripture"></div>
-            <div class="admin-form-group"><label>Content</label><textarea id="postContent" style="height:200px;"></textarea></div>
-            <button class="btn-submit" onclick="savePost()" style="width:100%;">Save Post</button>
-        </div>
-    </div>
+    <!-- Modals -->
+    <div id="postModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:6000;justify-content:center;align-items:center"><div style="background:#fff;width:90%;max-width:600px;padding:30px;border-radius:12px;position:relative"><button onclick="closePostModal()" style="position:absolute;top:10px;right:15px;background:none;border:none;font-size:1.5rem;cursor:pointer">&times;</button><h2 id="modalTitle" style="margin-bottom:20px">New Post</h2><input type="hidden" id="postIdField"><input type="hidden" id="postTypeField"><div class="admin-form-group"><label>Title</label><input type="text" id="postTitle"></div><div class="admin-form-group"><label>Scripture</label><input type="text" id="postScripture"></div><div class="admin-form-group"><label>Content</label><textarea id="postContent" style="height:150px"></textarea></div><button class="btn-submit" onclick="savePost()" style="width:100%">Save Post</button></div></div>
+    <div id="memberModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:6000;justify-content:center;align-items:center"><div style="background:#fff;width:90%;max-width:600px;padding:30px;border-radius:12px;position:relative"><button onclick="closeMemberModal()" style="position:absolute;top:10px;right:15px;background:none;border:none;font-size:1.5rem;cursor:pointer">&times;</button><h2 id="memberModalTitle" style="margin-bottom:20px">Add Member</h2><input type="hidden" id="memberIdField"><input type="hidden" id="memberTypeField"><div class="admin-form-group"><label>Full Name</label><input type="text" id="memberName"></div><div class="admin-form-group"><label>Role / Title</label><input type="text" id="memberRole"></div><div class="admin-form-group"><label>Photo (Upload)</label><input type="file" id="memberPhoto" accept="image/*"></div><div class="admin-form-group"><label>Bio</label><textarea id="memberBio" style="height:120px"></textarea></div><button class="btn-submit" onclick="saveMember()" style="width:100%">Save Member</button></div></div>
 
     <!-- FOOTER -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-main-row">
-                <div class="footer-info">
-                    <h3 class="footer-title">Glory Stream Convocation</h3>
-                    <div class="contact-row">
-                        <a href="mailto:p5062e@gmail.com" class="contact-item"><svg class="contact-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><span>p5062e@gmail.com</span></a>
-                        <a href="tel:0702987550" class="contact-item"><svg class="contact-icon" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg><span>0702987550</span></a>
-                    </div>
-                </div>
-                <div class="dev-credit">
-                    <a href="https://philvin-dev.vercel.app" target="_blank" class="dev-btn">DEVELOPED BY PHILVIN-DEV</a>
-                </div>
-            </div>
-            <div class="footer-divider"></div>
-            <p class="footer-copyright">Copyright &copy; <span id="currentYear"></span> Glory Stream Convocation. <span class="admin-footer-link" onclick="showView('admin-view')">Admin</span></p>
-        </div>
-    </footer>
+    <footer><div class="footer-content"><div class="footer-info"><h3 class="footer-title">The Glory Stream</h3><div class="contact-row"><a href="mailto:p5062e@gmail.com" class="contact-item"><svg class="contact-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><span>p5062e@gmail.com</span></a><a href="tel:0702987550" class="contact-item"><svg class="contact-icon" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg><span>0702987550</span></a></div><div class="social-row"><a href="#" class="social-link" title="YouTube"><svg viewBox="0 0 24 24"><path d="M21.58 7.19c-.23-.86-.91-1.54-1.77-1.77C18.25 5 12 5 12 5s-6.25 0-7.81.42c-.86.23-1.54.91-1.77 1.77C2 8.75 2 12 2 12s0 3.25.42 4.81c.23.86.91 1.54 1.77 1.77C5.75 19 12 19 12 19s6.25 0 7.81-.42c.86-.23 1.54-.91 1.77-1.77C22 15.25 22 12 22 12s0-3.25-.42-4.81zM10 15V9l5.2 3-5.2 3z"/></svg></a><a href="#" class="social-link" title="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a><a href="#" class="social-link" title="TikTok"><svg viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a><a href="#" class="social-link" title="X"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a></div></div><div class="footer-divider"></div><div class="dev-credit"><a href="https://philvin-dev.vercel.app" target="_blank" class="dev-btn">DEVELOPED BY PHILVIN-DEV</a></div><div class="footer-divider"></div><div class="footer-copyright">Copyright &copy; <span id="currentYear"></span> The Glory Stream.</div></div></footer>
 
-    <!-- JAVASCRIPT -->
     <script>
-        // --- INIT ---
-        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        document.getElementById('currentYear').textContent=new Date().getFullYear();
+        async function hashPin(p){const d=new TextEncoder().encode(p);const b=await crypto.subtle.digest('SHA-256',d);return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')}
+        let CORRECT_PIN_HASH="";hashPin("5062").then(h=>CORRECT_PIN_HASH=h);
+        function minimizeWindow(){window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})}function maximizeWindow(){if(!document.fullscreenElement)document.documentElement.requestFullscreen().catch(()=>{});else document.exitFullscreen()}function closeWindow(){document.getElementById('shutdownScreen').classList.add('active')}document.getElementById('shutdownScreen').addEventListener('click',function(){this.classList.remove('active')});
         
-        // --- WINDOW CONTROLS ---
-        function minimizeWindow() { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); }
-        function maximizeWindow() {
-            if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(err => {}); } 
-            else if (document.exitFullscreen) { document.exitFullscreen(); }
-        }
-        function closeWindow() { document.getElementById('shutdownScreen').classList.add('active'); }
-        document.getElementById('shutdownScreen').addEventListener('click', function() { this.classList.remove('active'); });
+        function showView(vId){document.querySelectorAll('.view-container').forEach(v=>v.classList.remove('active-view'));document.getElementById(vId).classList.add('active-view');window.scrollTo({top:0,behavior:'smooth'});document.querySelectorAll('.bottom-nav .nav-item').forEach(i=>i.classList.remove('active'));const m={'home-view':'nav-home','gospel-view':'nav-gospel','join-view':'nav-join','beliefs-view':'nav-dept','band-view':'nav-dept','cedars-view':'nav-dept','media-view':'nav-dept'};if(m[vId])document.getElementById(m[vId]).classList.add('active');if(vId==='gospel-view')renderFeed('daily','daily-feed-container');if(vId==='home-view')initScrollAnimations();if(vId==='admin-view')renderAdminTables();if(vId==='band-view')renderBand();if(vId==='cedars-view')renderCedars();if(vId==='media-view')renderMedia();document.getElementById('mobileSectionsMenu').classList.remove('active')}
+        function openSectionsMenu(){document.getElementById('mobileSectionsMenu').classList.add('active')}function closeSectionsMenu(e){if(e.target===document.getElementById('mobileSectionsMenu'))document.getElementById('mobileSectionsMenu').classList.remove('active')}
+        function showGospelSub(btn,id){const c=btn.closest('.container');c.querySelectorAll('.gospel-sub-view').forEach(v=>v.classList.remove('active-sub-view'));c.querySelector(`#${id}`).classList.add('active-sub-view');c.querySelectorAll('.gospel-tab').forEach(t=>t.classList.remove('active-tab'));btn.classList.add('active-tab');if(id==='gospel-daily')renderFeed('daily','daily-feed-container')}
+        function showAltarSub(btn,id){const c=btn.closest('.container');c.querySelectorAll('.altar-sub-view').forEach(v=>v.classList.remove('active-sub-view'));c.querySelector(`#${id}`).classList.add('active-sub-view');c.querySelectorAll('.altar-tab').forEach(t=>t.classList.remove('active-tab'));btn.classList.add('active-tab')}
+        
+        function pinNext(c,n){if(c.value.length>=1)document.getElementById(n).focus()}
+        async function checkAdminPin(){const p1=document.getElementById('pin-1').value,p2=document.getElementById('pin-2').value,p3=document.getElementById('pin-3').value,p4=document.getElementById('pin-4').value;if(p1&&p2&&p3&&p4){if(await hashPin(p1+p2+p3+p4)===CORRECT_PIN_HASH){document.getElementById('admin-login-full').style.display='none';document.getElementById('admin-portal-full').style.display='flex';document.getElementById('pin-error-msg').style.display='none';renderAdminTables()}else{document.getElementById('pin-error-msg').style.display='block';['pin-1','pin-2','pin-3','pin-4'].forEach(id=>document.getElementById(id).value='');document.getElementById('pin-1').focus()}}}
+        function lockAdmin(){document.getElementById('admin-login-full').style.display='block';document.getElementById('admin-portal-full').style.display='none';['pin-1','pin-2','pin-3','pin-4'].forEach(id=>document.getElementById(id).value='')}
+        function showAdminTab(t,e){document.querySelectorAll('.admin-tab-content').forEach(c=>c.classList.remove('active-admin-tab'));document.getElementById(`admin-${t}-tab`).classList.add('active-admin-tab');document.querySelectorAll('.admin-nav-link').forEach(l=>l.classList.remove('active-admin'));e.classList.add('active-admin');renderAdminTables()}
 
-        // --- VIEW MANAGEMENT ---
-        function showView(viewId) {
-            document.querySelectorAll('.view-container').forEach(view => view.classList.remove('active-view'));
-            document.getElementById(viewId).classList.add('active-view');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        function getPosts(t){return JSON.parse(localStorage.getItem(`gs_posts_${t}`))||[]}function savePosts(t,p){localStorage.setItem(`gs_posts_${t}`,JSON.stringify(p))}
+        function renderFeed(t,cId){const c=document.getElementById(cId);if(!c)return;const p=getPosts(t);c.innerHTML=p.length===0?'<p style="text-align:center">No posts yet.</p>':p.slice().reverse().map(x=>`<div class="post-card"><div class="post-header"><div class="post-avatar">GS</div><div><div class="post-user-info">Glory Stream</div><div class="post-date">${x.date}</div></div></div><div class="post-body"><h4>${x.title}</h4><p class="post-scripture">${x.scripture}</p><p>${x.content}</p></div><div class="post-actions"><button class="action-btn" onclick="this.classList.toggle('liked')">Like</button><button class="action-btn" onclick="this.classList.toggle('saved')">Save</button></div></div>`).join('')}
+        function openPostModal(t,id=null){document.getElementById('postModal').style.display='flex';document.getElementById('postTypeField').value=t;if(id){const p=getPosts(t).find(x=>x.id===id);document.getElementById('postIdField').value=p.id;document.getElementById('postTitle').value=p.title;document.getElementById('postScripture').value=p.scripture;document.getElementById('postContent').value=p.content;document.getElementById('modalTitle').innerText='Edit Post'}else{document.getElementById('postIdField').value='';document.getElementById('postTitle').value='';document.getElementById('postScripture').value='';document.getElementById('postContent').value='';document.getElementById('modalTitle').innerText='New Post'}}
+        function closePostModal(){document.getElementById('postModal').style.display='none'}
+        function savePost(){const t=document.getElementById('postTypeField').value,id=document.getElementById('postIdField').value,ps=getPosts(t);const d={title:document.getElementById('postTitle').value,scripture:document.getElementById('postScripture').value,content:document.getElementById('postContent').value,date:new Date().toISOString().split('T')[0]};if(id){const i=ps.findIndex(x=>x.id===parseInt(id));ps[i]={...ps[i],...d}}else{d.id=ps.length>0?Math.max(...ps.map(x=>x.id))+1:1;ps.push(d)}savePosts(t,ps);closePostModal();renderAdminTables()}
+        function editPost(t,id){openPostModal(t,id)}function deletePost(t,id){if(confirm('Delete?')){savePosts(t,getPosts(t).filter(x=>x.id!==id));renderAdminTables()}}
 
-            document.querySelectorAll('.bottom-nav .nav-item').forEach(item => item.classList.remove('active'));
-            const navMap = { 'home-view': 'nav-home', 'band-view': 'nav-band', 'gospel-view': 'nav-gospel' };
-            if (navMap[viewId]) document.getElementById(navMap[viewId]).classList.add('active');
-            
-            if(viewId === 'gospel-view') renderFeeds();
-            if(viewId === 'admin-view') renderAdminTables();
-        }
-
-        function goToHomeSection(sectionId) {
-            showView('home-view');
-            setTimeout(() => document.getElementById(sectionId).scrollIntoView({behavior:'smooth'}), 100);
-        }
-
-        // --- MOBILE SECTIONS MENU ---
-        function openSectionsMenu() { document.getElementById('mobileSectionsMenu').classList.add('active'); }
-        function closeSectionsMenu(e) { if(e.target === document.getElementById('mobileSectionsMenu')) document.getElementById('mobileSectionsMenu').classList.remove('active'); }
-
-        // --- GOSPEL SUB-VIEWS ---
-        function showGospelSub(subId) {
-            document.querySelectorAll('.gospel-sub-view').forEach(v => v.classList.remove('active-sub-view'));
-            document.getElementById(subId).classList.add('active-sub-view');
-            document.querySelectorAll('.gospel-tab').forEach(t => t.classList.remove('active-tab'));
-            event.target.classList.add('active-tab');
-        }
-
-        // --- ADMIN SUB-VIEWS ---
-        function showAdminSub(subId) {
-            document.querySelectorAll('.admin-sub-view').forEach(v => v.classList.remove('active-admin-sub'));
-            document.getElementById(subId).classList.add('active-admin-sub');
-            document.querySelectorAll('.admin-nav-item').forEach(n => n.classList.remove('active-admin'));
-            event.target.classList.add('active-admin');
-        }
-
-        // --- MOCK DATA & CRUD (Frontend Simulation using LocalStorage) ---
-        function getPosts(type) {
-            const posts = localStorage.getItem(`gs_posts_${type}`);
-            if (!posts) {
-                const initialData = [
-                    { id: 1, title: "Walking in Grace", scripture: "2 Corinthians 12:9", content: "But he said to me, 'My grace is sufficient for you, for my power is made perfect in weakness.' Therefore I will boast all the more gladly about my weaknesses, so that Christ's power may rest on me.", date: "2023-10-25" },
-                    { id: 2, title: "The Power of Prayer", scripture: "Philippians 4:6", content: "Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God.", date: "2023-10-26" }
-                ];
-                localStorage.setItem(`gs_posts_${type}`, JSON.stringify(initialData));
-                return initialData;
-            }
-            return JSON.parse(posts);
-        }
-
-        function savePosts(type, posts) {
-            localStorage.setItem(`gs_posts_${type}`, JSON.stringify(posts));
-        }
-
-        // --- RENDER FEEDS ---
-        function renderFeeds() {
-            renderFeed('daily', 'daily-feed-container');
-            renderFeed('discipleship', 'discipleship-feed-container');
-        }
-
-        function renderFeed(type, containerId) {
-            const container = document.getElementById(containerId);
-            const posts = getPosts(type);
-            container.innerHTML = '';
-            
-            if(posts.length === 0) {
-                container.innerHTML = '<p style="text-align:center;">No posts yet. Check back soon!</p>';
-                return;
-            }
-
-            posts.reverse().forEach(post => {
-                const card = document.createElement('div');
-                card.className = 'post-card';
-                card.innerHTML = `
-                    <div class="post-header">
-                        <div class="post-avatar">GS</div>
-                        <div>
-                            <div class="post-user-info">Glory Stream Convocation</div>
-                            <div class="post-date">${post.date} • ${type === 'daily' ? 'Daily Encouragement' : 'Discipleship'}</div>
-                        </div>
-                    </div>
-                    <div class="post-body">
-                        <h4 style="color:var(--deep-blue); margin-bottom:5px;">${post.title}</h4>
-                        <p class="post-scripture">${post.scripture}</p>
-                        <p>${post.content}</p>
-                    </div>
-                    <div class="post-actions">
-                        <button class="action-btn" onclick="reactPost(this, 'liked')">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> Like
-                        </button>
-                        <button class="action-btn">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Comment
-                        </button>
-                        <button class="action-btn">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg> Share
-                        </button>
-                        <button class="action-btn" onclick="reactPost(this, 'saved')">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg> Save
-                        </button>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function reactPost(btn, className) {
-            if(btn.classList.contains(className)) btn.classList.remove(className);
-            else btn.classList.add(className);
-        }
-
-        // --- ADMIN LOGIC ---
-        function renderAdminTables() {
-            renderAdminTable('daily', 'admin-daily-table');
-            renderAdminTable('discipleship', 'admin-discipleship-table');
-        }
-
-        function renderAdminTable(type, tableId) {
-            const tbody = document.getElementById(tableId);
-            const posts = getPosts(type);
-            tbody.innerHTML = '';
-            posts.forEach(post => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${post.title}</td>
-                    <td>${post.date}</td>
-                    <td>
-                        <button class="btn-sm btn-edit" onclick="editPost('${type}', ${post.id})">Edit</button>
-                        <button class="btn-sm btn-delete" onclick="deletePost('${type}', ${post.id})">Delete</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function openPostModal(type, id = null) {
-            document.getElementById('postModal').style.display = 'flex';
-            document.getElementById('postTypeField').value = type;
-            
-            if (id) {
-                const posts = getPosts(type);
-                const post = posts.find(p => p.id === id);
-                document.getElementById('postIdField').value = post.id;
-                document.getElementById('postTitle').value = post.title;
-                document.getElementById('postScripture').value = post.scripture;
-                document.getElementById('postContent').value = post.content;
-                document.getElementById('modalTitle').innerText = 'Edit Post';
-            } else {
-                document.getElementById('postIdField').value = '';
-                document.getElementById('postTitle').value = '';
-                document.getElementById('postScripture').value = '';
-                document.getElementById('postContent').value = '';
-                document.getElementById('modalTitle').innerText = 'New Post';
-            }
-        }
-
-        function closePostModal() {
-            document.getElementById('postModal').style.display = 'none';
-        }
-
-        function savePost() {
-            const type = document.getElementById('postTypeField').value;
-            const id = document.getElementById('postIdField').value;
-            const posts = getPosts(type);
-
-            const postData = {
-                title: document.getElementById('postTitle').value,
-                scripture: document.getElementById('postScripture').value,
-                content: document.getElementById('postContent').value,
-                date: new Date().toISOString().split('T')[0]
-            };
-
-            if (id) {
-                const index = posts.findIndex(p => p.id === parseInt(id));
-                posts[index] = { ...posts[index], ...postData };
-            } else {
-                postData.id = posts.length > 0 ? Math.max(...posts.map(p => p.id)) + 1 : 1;
-                posts.push(postData);
-            }
-
-            savePosts(type, posts);
-            closePostModal();
-            renderAdminTables();
-        }
-
-        function editPost(type, id) {
-            openPostModal(type, id);
-        }
-
-        function deletePost(type, id) {
-            if(confirm('Are you sure you want to delete this post?')) {
-                let posts = getPosts(type);
-                posts = posts.filter(p => p.id !== id);
-                savePosts(type, posts);
-                renderAdminTables();
-            }
-        }
-
-        // Initial Load Feeds if Gospel View is active
-        if(window.location.hash === '#gospel-view') renderFeeds();
-
+        function getMembers(t){const m=JSON.parse(localStorage.getItem(`gs_members_${t}`));if(!m){if(t==='band')return[{id:1,name:"Justus Mwangi",role:"JM Solo - Lead Guitarist",photo:"",bio:""},{id:2,name:"Seth Jatia",role:"Jatia-Bass - Bassist",photo:"",bio:""},{id:3,name:"Meshack Melau",role:"Pilau - Drums",photo:"",bio:""},{id:4,name:"Gerald Mwangi",role:"G-Max - Keys",photo:"",bio:""},{id:5,name:"Samuel Barasa",role:"SamKeys - Keys",photo:"",bio:""},{id:6,name:"Darius Barasa",role:"King Darius - Keys",photo:"",bio:""},{id:7,name:"Linet Nzisa",role:"Soprano",photo:"",bio:""},{id:8,name:"Brenda Hephy",role:"Soprano",photo:"",bio:""},{id:9,name:"Esther Namsifu",role:"Alto",photo:"",bio:""},{id:10,name:"Mary Nyaguthii",role:"Alto",photo:"",bio:""},{id:11,name:"Ivy Wambungu",role:"Alto",photo:"",bio:""},{id:12,name:"Eunice Mutuku",role:"Alto",photo:"",bio:""},{id:13,name:"John Kimwele",role:"Tenor",photo:"",bio:""},{id:14,name:"Shadrack Baraka",role:"Tenor",photo:"",bio:""},{id:15,name:"Philip Muuo",role:"Tenor",photo:"",bio:""}];return[]}return m}function saveMembers(t,m){localStorage.setItem(`gs_members_${t}`,JSON.stringify(m))}
+        function renderMembers(type,containerId){const c=document.getElementById(containerId);if(!c)return;const m=getMembers(type);c.innerHTML=m.length===0?'<p style="text-align:center;grid-column:1/-1">Profiles will appear here.</p>':m.map(x=>`<div class="cedar-card"><img src="${x.photo||'https://via.placeholder.com/150'}" alt="${x.name}" class="cedar-photo"><div class="cedar-name">${x.name}</div><div class="cedar-role">${x.role}</div>${x.bio?`<div class="cedar-bio">${x.bio}</div>`:''}</div>`).join('')}
+        function renderCedars(){renderMembers('leadership','cedars-container')}function renderBand(){renderMembers('band','band-container')}function renderMedia(){renderMembers('media','media-container')}
+        function openMemberModal(t,id=null){document.getElementById('memberModal').style.display='flex';document.getElementById('memberTypeField').value=t;document.getElementById('memberPhoto').value='';if(id){const m=getMembers(t).find(x=>x.id===id);document.getElementById('memberIdField').value=m.id;document.getElementById('memberName').value=m.name;document.getElementById('memberRole').value=m.role;document.getElementById('memberBio').value=m.bio||'';document.getElementById('memberModalTitle').innerText='Edit Member'}else{document.getElementById('memberIdField').value='';document.getElementById('memberName').value='';document.getElementById('memberRole').value='';document.getElementById('memberBio').value='';document.getElementById('memberModalTitle').innerText='Add Member'}}
+        function closeMemberModal(){document.getElementById('memberModal').style.display='none'}
+        function processAndCompressImage(f,mw=200,mh=200){return new Promise(r=>{const file=f.files[0];if(!file){r('');return}const reader=new FileReader();reader.onload=e=>{const img=new Image();img.onload=()=>{let w=img.width,h=img.height;if(w>h){if(w>mw){h*=mw/w;w=mw}}else{if(h>mh){w*=mh/h;h=mh}}const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);r(canvas.toDataURL('image/jpeg',.7))};img.src=e.target.result};reader.onerror=()=>r('');reader.readAsDataURL(file)})}
+        async function saveMember(){const t=document.getElementById('memberTypeField').value,id=document.getElementById('memberIdField').value,ms=getMembers(t);const pi=document.getElementById('memberPhoto');let pd='';if(pi.files&&pi.files[0])pd=await processAndCompressImage(pi);const md={name:document.getElementById('memberName').value,role:document.getElementById('memberRole').value,bio:document.getElementById('memberBio').value};if(id){const i=ms.findIndex(x=>x.id===parseInt(id));md.photo=pd||ms[i].photo;ms[i]={...ms[i],...md}}else{md.id=ms.length>0?Math.max(...ms.map(x=>x.id))+1:1;md.photo=pd;ms.push(md)}saveMembers(t,ms);closeMemberModal();renderAdminTables()}
+        function editMember(t,id){openMemberModal(t,id)}function deleteMember(t,id){if(confirm('Delete?')){saveMembers(t,getMembers(t).filter(x=>x.id!==id));renderAdminTables()}}
+        
+        function renderAdminTables(){const dt=document.getElementById('admin-daily-table');if(dt)dt.innerHTML=getPosts('daily').map(p=>`<tr><td>${p.title}</td><td>${p.scripture}</td><td>${p.date}</td><td><button class="btn-sm btn-edit" onclick="editPost('daily',${p.id})">Edit</button><button class="btn-sm btn-delete" onclick="deletePost('daily',${p.id})">Delete</button></td></tr>`).join('');['leadership','band','media'].forEach(t=>{const tb=document.getElementById(`admin-${t}-table`);if(tb)tb.innerHTML=getMembers(t).map(m=>`<tr><td><img src="${m.photo||'https://via.placeholder.com/40'}"></td><td>${m.name}</td><td>${m.role}</td><td><button class="btn-sm btn-edit" onclick="editMember('${t}',${m.id})">Edit</button><button class="btn-sm btn-delete" onclick="deleteMember('${t}',${m.id})">Delete</button></td></tr>`).join('')})}
+        function initScrollAnimations(){const els=document.querySelectorAll('#home-view .anim-fade-up');els.forEach(el=>el.classList.remove('is-visible'));const obs=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){const sibs=Array.from(entry.target.parentElement.querySelectorAll('.anim-fade-up'));const i=sibs.indexOf(entry.target);setTimeout(()=>entry.target.classList.add('is-visible'),i>=0?i*80:0);obs.unobserve(entry.target)}})},{threshold:.1});els.forEach(el=>obs.observe(el))}
+        document.addEventListener('DOMContentLoaded',initScrollAnimations);
     </script>
 </body>
 </html>
